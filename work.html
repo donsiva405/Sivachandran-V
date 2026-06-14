@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#06060a;--surface:#0f0f16;--panel:#16161f;--card:#1c1c28;--card2:#22223a;
+  --t1:#ffffff;--t2:#c8c4f0;--t3:#b8b4e0;--t4:#7a76a8;
+  --red:#ff3358;--cyan:#00f5e4;--gold:#ffd440;--violet:#b06aff;--orange:#ff7a3d;--green:#39ffb0;
+  --border:rgba(255,255,255,0.10);--nav-h:80px;--pad:clamp(2rem,6vw,7rem);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:'Outfit',sans-serif;font-size:17px;line-height:1.7;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);background:rgba(6,6,10,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.06em;color:var(--t1);text-decoration:none;}
+.logo span{color:var(--red);}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{font-size:0.82rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--t1);}
+.btn-hire{font-size:0.8rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;padding:0.65rem 1.8rem;border:1.5px solid var(--red);color:var(--red);background:transparent;text-decoration:none;transition:background 0.22s,color 0.22s;}
+.btn-hire:hover{background:var(--red);color:#fff;}
+
+/* ── PAGE HEADER ── */
+.page-header{padding-top:calc(var(--nav-h) + 5rem);padding-bottom:4rem;padding-left:var(--pad);padding-right:var(--pad);position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.page-header::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 70% at 65% 50%,rgba(255,51,88,0.10) 0%,transparent 70%);}
+.ph-eyebrow{font-size:0.72rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:1rem;display:block;}
+.ph-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,10rem);line-height:0.88;letter-spacing:0.01em;color:var(--t1);}
+.ph-title span{color:var(--red);}
+.ph-sub{font-size:clamp(1rem,1.4vw,1.12rem);color:var(--t2);font-weight:400;max-width:540px;margin-top:1.8rem;line-height:1.88;}
+
+/* ── EDIT MODE INDICATOR ── */
+#edit-bar{display:none;background:rgba(255,212,64,0.10);border-bottom:2px solid var(--gold);padding:0.75rem var(--pad);align-items:center;justify-content:space-between;gap:1rem;position:sticky;top:var(--nav-h);z-index:200;}
+#edit-bar.show{display:flex;}
+.edit-bar-left{display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;font-weight:600;color:var(--gold);letter-spacing:0.08em;}
+.edit-bar-right{display:flex;gap:0.75rem;}
+.eb-btn{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:0.5rem 1.2rem;border:1.5px solid;cursor:pointer;transition:all 0.2s;background:transparent;}
+.eb-save{border-color:var(--green);color:var(--green);}
+.eb-save:hover{background:var(--green);color:#000;}
+.eb-exit{border-color:var(--red);color:var(--red);}
+.eb-exit:hover{background:var(--red);color:#fff;}
+
+/* ── CATEGORY TABS ── */
+.cat-bar{background:rgba(6,6,10,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 var(--pad);display:flex;align-items:stretch;overflow-x:auto;position:sticky;top:var(--nav-h);z-index:199;transition:top 0.2s;}
+body.editing .cat-bar{top:calc(var(--nav-h) + 42px);}
+.cat-bar::-webkit-scrollbar{display:none;}
+.cat-tab{font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:1.3rem 1.8rem;border:none;border-bottom:3px solid transparent;background:transparent;color:var(--t3);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:0.6rem;transition:color 0.2s,border-color 0.2s;flex-shrink:0;}
+.cat-tab:hover{color:var(--t1);}
+.cat-tab.active{color:var(--t1);border-bottom-color:var(--red);}
+.cat-count{font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:20px;background:rgba(255,255,255,0.1);color:var(--t2);}
+.cat-tab.active .cat-count{background:rgba(255,51,88,0.2);color:var(--red);}
+#add-cat-tab{color:var(--t4);border:none;background:transparent;padding:1.3rem 1.5rem;font-size:0.85rem;cursor:pointer;white-space:nowrap;display:none;align-items:center;gap:0.5rem;letter-spacing:0.06em;transition:color 0.2s;flex-shrink:0;}
+body.editing #add-cat-tab{display:flex;}
+#add-cat-tab:hover{color:var(--gold);}
+
+/* ── MAIN CONTENT ── */
+.main{padding:3rem var(--pad) 8rem;}
+
+/* ── PANEL ── */
+.cat-panel{display:none;}
+.cat-panel.active{display:block;}
+
+/* ── PANEL HEADER ── */
+.panel-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.02em;line-height:1;}
+.panel-desc{font-size:0.98rem;color:var(--t2);line-height:1.8;max-width:500px;margin-top:0.5rem;}
+.panel-hd-right{display:flex;gap:0.75rem;align-items:center;}
+
+/* ── ADD PROJECT BTN ── */
+.btn-add-project{font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.75rem 1.5rem;border:1.5px solid var(--cyan);color:var(--cyan);background:transparent;cursor:pointer;display:none;align-items:center;gap:0.5rem;transition:all 0.2s;}
+.btn-add-project:hover{background:var(--cyan);color:#000;}
+body.editing .btn-add-project{display:flex;}
+.btn-delete-cat{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.65rem 1.2rem;border:1.5px solid rgba(255,51,88,0.4);color:rgba(255,51,88,0.6);background:transparent;cursor:pointer;display:none;transition:all 0.2s;}
+.btn-delete-cat:hover{border-color:var(--red);color:var(--red);}
+body.editing .btn-delete-cat{display:block;}
+
+/* ── PROJECT GRID ── */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;}
+
+/* ── PROJECT CARD ── */
+.proj-card{background:var(--card);border:1px solid var(--border);overflow:hidden;transition:transform 0.3s,border-color 0.3s;position:relative;}
+.proj-card:not(.editing-card):hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.22);}
+.proj-card.wide{grid-column:span 2;}
+.proj-card.featured{border-color:rgba(255,212,64,0.3);}
+
+/* drag handle */
+.drag-handle{position:absolute;top:0.6rem;right:0.6rem;z-index:10;width:28px;height:28px;background:rgba(255,212,64,0.15);border:1px solid rgba(255,212,64,0.3);color:var(--gold);font-size:0.9rem;display:none;align-items:center;justify-content:center;cursor:grab;border-radius:3px;}
+body.editing .drag-handle{display:flex;}
+
+/* card controls (edit mode) */
+.card-controls{position:absolute;top:0.6rem;left:0.6rem;z-index:10;display:none;flex-direction:column;gap:0.35rem;}
+body.editing .card-controls{display:flex;}
+.cc-btn{font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.6rem;border:none;cursor:pointer;transition:opacity 0.2s;}
+.cc-btn:hover{opacity:0.8;}
+.cc-feat{background:var(--gold);color:#000;}
+.cc-draft{background:var(--violet);color:#fff;}
+.cc-del{background:var(--red);color:#fff;}
+
+/* status badges */
+.status-badge{position:absolute;bottom:0.75rem;right:0.75rem;font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.25rem 0.6rem;display:none;}
+body.editing .status-badge{display:block;}
+.status-badge.draft{background:rgba(176,106,255,0.25);color:var(--violet);border:1px solid rgba(176,106,255,0.4);}
+.status-badge.published{background:rgba(57,255,176,0.15);color:var(--green);border:1px solid rgba(57,255,176,0.3);}
+.status-badge.featured{background:rgba(255,212,64,0.15);color:var(--gold);border:1px solid rgba(255,212,64,0.3);}
+
+/* ── THUMB ── */
+.card-thumb{width:100%;height:280px;min-height:120px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;}
+.proj-card.wide .card-thumb{height:340px;}
+.card-thumb img{width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;}
+.card-thumb img.has-img{display:block;}
+
+/* resize handle — only in edit mode */
+.thumb-resize-handle{position:absolute;bottom:0;left:0;right:0;height:18px;background:rgba(255,212,64,0.18);border-top:2px solid rgba(255,212,64,0.5);cursor:ns-resize;display:none;align-items:center;justify-content:center;z-index:20;}
+.thumb-resize-handle::after{content:'⠿';font-size:0.7rem;color:rgba(255,212,64,0.8);letter-spacing:0.2em;}
+body.editing .thumb-resize-handle{display:flex;}
+
+/* size presets bar — edit mode */
+.thumb-size-bar{position:absolute;top:0.6rem;right:0.6rem;display:none;gap:0.3rem;z-index:15;flex-wrap:wrap;justify-content:flex-end;}
+body.editing .thumb-size-bar{display:flex;}
+.tsb-btn{font-size:0.58rem;font-weight:700;letter-spacing:0.08em;padding:0.22rem 0.5rem;border:1px solid rgba(255,255,255,0.22);background:rgba(6,6,10,0.75);color:#c8c4f0;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.tsb-btn:hover{border-color:#ffd440;color:#ffd440;}
+.tsb-btn.active{border-color:#ffd440;color:#ffd440;background:rgba(255,212,64,0.15);}
+.thumb-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;opacity:0.25;pointer-events:none;}
+.thumb-ph.hidden{display:none;}
+.thumb-ph-icon{font-size:2.8rem;}
+.thumb-ph-text{font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;}
+
+/* upload overlay */
+.thumb-upload-overlay{position:absolute;inset:0;background:rgba(6,6,10,0.78);display:none;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;cursor:pointer;transition:opacity 0.2s;}
+body.editing .thumb-upload-overlay{display:flex;}
+.thumb-upload-overlay input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.tuo-icon{font-size:1.6rem;pointer-events:none;}
+.tuo-text{font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#fff;pointer-events:none;}
+
+/* type badge */
+.type-badge{position:absolute;top:0.75rem;left:50%;transform:translateX(-50%);font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:0.3rem 0.75rem;z-index:5;white-space:nowrap;}
+
+/* ── CARD BODY ── */
+.card-body{padding:1.6rem 1.8rem 2rem;}
+.card-cat-label{font-size:0.72rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.5rem;}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:0.03em;line-height:1.1;color:var(--t1);margin-bottom:0.6rem;outline:none;}
+.card-desc{font-size:0.96rem;color:var(--t2);line-height:1.82;font-weight:400;margin-bottom:1rem;outline:none;}
+.card-meta{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.8rem;}
+.card-tag{font-size:0.68rem;font-weight:500;letter-spacing:0.06em;padding:0.28rem 0.65rem;border:1px solid rgba(255,255,255,0.14);color:var(--t3);}
+
+/* meta fields (edit mode) */
+.card-meta-fields{display:none;margin-top:1.2rem;flex-direction:column;gap:0.75rem;padding-top:1.2rem;border-top:1px solid var(--border);}
+body.editing .card-meta-fields{display:flex;}
+.mf-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.mf-label{font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--t4);margin-bottom:0.3rem;}
+.mf-input{width:100%;background:var(--bg);border:1px solid rgba(255,255,255,0.12);color:var(--t1);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:0.65rem 0.9rem;outline:none;transition:border-color 0.2s;}
+.mf-input:focus{border-color:rgba(255,255,255,0.3);}
+.mf-input::placeholder{color:var(--t4);}
+
+/* gallery strip (design) */
+.gallery-strip{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;}
+.gallery-thumb{width:70px;height:70px;object-fit:cover;border:1px solid var(--border);cursor:pointer;transition:border-color 0.2s;}
+.gallery-thumb:hover{border-color:var(--cyan);}
+.gallery-add{width:70px;height:70px;background:var(--panel);border:1.5px dashed rgba(255,255,255,0.2);display:none;align-items:center;justify-content:center;cursor:pointer;font-size:1.4rem;color:var(--t4);transition:all 0.2s;position:relative;}
+.gallery-add:hover{border-color:var(--cyan);color:var(--cyan);}
+.gallery-add input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+body.editing .gallery-add{display:flex;}
+
+/* video embed field */
+.embed-field{display:none;margin-top:0.75rem;}
+body.editing .embed-field{display:block;}
+.embed-input{width:100%;background:var(--bg);border:1px solid rgba(255,255,255,0.12);color:var(--t1);font-family:'Outfit',sans-serif;font-size:0.85rem;padding:0.65rem 0.9rem;outline:none;transition:border-color 0.2s;}
+.embed-input:focus{border-color:var(--cyan);}
+.embed-input::placeholder{color:var(--t4);}
+
+/* ── FLIPBOOK VIEWER ── */
+.flipbook-btn{font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.55rem 1.2rem;background:rgba(176,106,255,0.15);border:1px solid rgba(176,106,255,0.4);color:var(--violet);cursor:pointer;transition:all 0.2s;margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.4rem;}
+.flipbook-btn:hover{background:rgba(176,106,255,0.3);}
+.flipbook-modal{position:fixed;inset:0;z-index:500;background:rgba(6,6,10,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;}
+.flipbook-modal.open{display:flex;}
+.flipbook-top{width:100%;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.flipbook-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.04em;}
+.flipbook-close{font-size:0.8rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:0.5rem 1.2rem;border:1.5px solid var(--border);color:var(--t2);background:transparent;cursor:pointer;transition:all 0.2s;}
+.flipbook-close:hover{border-color:var(--red);color:var(--red);}
+.flipbook-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden;}
+.flipbook-page{max-width:70vw;max-height:75vh;object-fit:contain;border:1px solid var(--border);box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+.flipbook-nav{display:flex;align-items:center;gap:2rem;padding:1.5rem 2rem;border-top:1px solid var(--border);}
+.fb-btn{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.06em;padding:0.6rem 1.8rem;border:1.5px solid var(--border);color:var(--t2);background:transparent;cursor:pointer;transition:all 0.2s;}
+.fb-btn:hover:not(:disabled){border-color:var(--t1);color:var(--t1);}
+.fb-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.fb-counter{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--t2);letter-spacing:0.1em;}
+.fb-zoom{display:flex;gap:0.5rem;margin-left:auto;}
+.fb-zoom-btn{width:36px;height:36px;background:var(--panel);border:1px solid var(--border);color:var(--t2);cursor:pointer;font-size:1rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.fb-zoom-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* ── GALLERY LIGHTBOX ── */
+.lightbox{position:fixed;inset:0;z-index:600;background:rgba(6,6,10,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lb-img{max-width:90vw;max-height:85vh;object-fit:contain;}
+.lb-close{position:absolute;top:1.5rem;right:2rem;font-size:0.8rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:0.5rem 1.2rem;border:1.5px solid var(--border);color:var(--t2);background:transparent;cursor:pointer;transition:all 0.2s;}
+.lb-close:hover{border-color:var(--red);color:var(--red);}
+
+/* ── NEW CATEGORY MODAL ── */
+.modal-bg{position:fixed;inset:0;z-index:400;background:rgba(6,6,10,0.88);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal-box{background:var(--panel);border:1px solid rgba(255,255,255,0.12);padding:2.5rem;width:100%;max-width:500px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.04em;margin-bottom:1.5rem;}
+.modal-input{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.14);color:#fff;font-family:'Outfit',sans-serif;font-size:1rem;padding:0.9rem 1.1rem;outline:none;margin-bottom:1rem;transition:border-color 0.2s;}
+.modal-input:focus{border-color:var(--cyan);}
+.modal-input::placeholder{color:var(--t4);}
+.modal-label{font-size:0.72rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:0.5rem;display:block;}
+.modal-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.5rem;}
+.modal-type-opt{padding:0.75rem 0.5rem;border:1.5px solid var(--border);background:transparent;color:var(--t2);font-size:0.78rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;text-align:center;transition:all 0.2s;}
+.modal-type-opt:hover{border-color:var(--cyan);color:var(--cyan);}
+.modal-type-opt.selected{border-color:var(--cyan);background:rgba(0,245,228,0.1);color:var(--cyan);}
+.modal-color-grid{display:flex;gap:0.6rem;margin-bottom:1.5rem;}
+.modal-color-opt{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color 0.2s;}
+.modal-color-opt.selected{border-color:#fff;}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;}
+.modal-cancel{padding:0.75rem 1.5rem;border:1.5px solid var(--border);color:var(--t2);background:transparent;cursor:pointer;font-size:0.82rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;}
+.modal-cancel:hover{border-color:var(--t1);color:var(--t1);}
+.modal-confirm{padding:0.75rem 1.8rem;border:none;background:var(--cyan);color:#000;cursor:pointer;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;transition:opacity 0.2s;}
+.modal-confirm:hover{opacity:0.85;}
+
+body.editing .img-adj-trigger{display:block !important;}
+body.editing .card-thumb{cursor:default;}
+
+/* ── IMAGE ADJUSTER MODAL ── */
+.img-adj-modal{position:fixed;inset:0;z-index:800;background:rgba(6,6,10,0.96);backdrop-filter:blur(16px);display:none;flex-direction:column;align-items:center;justify-content:center;}
+.img-adj-modal.open{display:flex;}
+.img-adj-box{background:#16161f;border:1px solid rgba(255,255,255,0.12);width:min(700px,95vw);display:flex;flex-direction:column;overflow:hidden;}
+.img-adj-top{padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+.img-adj-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.06em;color:#ffd440;}
+.img-adj-close{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.4rem 0.9rem;border:1.5px solid rgba(255,255,255,0.2);color:#b8b4e0;background:transparent;cursor:pointer;}
+.img-adj-close:hover{border-color:#ff3358;color:#ff3358;}
+/* viewport */
+.img-adj-viewport{position:relative;width:100%;height:340px;background:#06060a;overflow:hidden;cursor:grab;user-select:none;}
+.img-adj-viewport.dragging{cursor:grabbing;}
+.img-adj-viewport img{position:absolute;transform-origin:top left;pointer-events:none;max-width:none;}
+/* controls */
+.img-adj-controls{padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:0.9rem;border-top:1px solid rgba(255,255,255,0.08);}
+.iac-row{display:flex;align-items:center;gap:0.9rem;}
+.iac-label{font-size:0.65rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#7a76a8;width:70px;flex-shrink:0;}
+.iac-range{flex:1;-webkit-appearance:none;height:3px;background:rgba(255,255,255,0.12);outline:none;cursor:pointer;border-radius:2px;}
+.iac-range::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#00f5e4;cursor:pointer;}
+.iac-val{font-size:0.78rem;font-weight:600;color:#c8c4f0;min-width:44px;text-align:right;}
+.iac-btns{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.2rem;}
+.iac-btn{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.45rem 1rem;border:1.5px solid rgba(255,255,255,0.15);color:#c8c4f0;background:transparent;cursor:pointer;transition:all 0.18s;}
+.iac-btn:hover{border-color:#00f5e4;color:#00f5e4;}
+.iac-btn.primary{border-color:#00f5e4;color:#00f5e4;background:rgba(0,245,228,0.08);}
+.iac-fit-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;}
+.fit-opt{padding:0.55rem;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:#b8b4e0;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;text-align:center;transition:all 0.18s;}
+.fit-opt:hover,.fit-opt.active{border-color:#00f5e4;color:#00f5e4;background:rgba(0,245,228,0.08);}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:5rem 2rem;border:1.5px dashed rgba(255,255,255,0.1);}
+.empty-icon{font-size:3rem;opacity:0.3;margin-bottom:1rem;}
+.empty-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.04em;color:var(--t2);margin-bottom:0.5rem;}
+.empty-sub{font-size:0.9rem;color:var(--t3);line-height:1.7;}
+
+/* ── FOOTER ── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:2.5rem var(--pad);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em;color:var(--t1);}
+.foot-logo span{color:var(--red);}
+footer p{font-size:0.82rem;color:var(--t2);}
+.foot-links{display:flex;gap:2rem;}
+.foot-links a{font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--t2);text-decoration:none;transition:color 0.2s;}
+.foot-links a:hover{color:var(--t1);}
+
+@media(max-width:860px){.proj-grid{grid-template-columns:1fr;}.proj-card.wide{grid-column:span 1;}.proj-card.wide .card-thumb{aspect-ratio:16/9;}.nav-links{display:none;}nav{padding:0 1.5rem;}}
+@media(max-width:540px){:root{--pad:1.5rem;}.mf-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="portfolio.html" class="logo">Studio<span>.</span>Name</a>
+  <ul class="nav-links">
+    <li><a href="portfolio.html">Home</a></li>
+    <li><a href="portfolio.html#about">About</a></li>
+    <li><a href="portfolio.html#services">Services</a></li>
+    <li><a href="work.html" class="active">Work</a></li>
+    <li><a href="portfolio.html#contact">Contact</a></li>
+  </ul>
+  <a href="portfolio.html#contact" class="btn-hire">Hire Me</a>
+</nav>
+
+<!-- EDIT MODE BAR -->
+<div id="edit-bar">
+  <div class="edit-bar-left">✏️ Edit Mode Active — press E twice to exit</div>
+  <div class="edit-bar-right">
+    <button class="eb-btn eb-save" onclick="saveData()">💾 Save</button>
+    <button class="eb-btn eb-exit" onclick="exitEdit()">✕ Exit Edit</button>
+  </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="ph-eyebrow">Portfolio</span>
+  <h1 class="ph-title">The<br><span>Work</span></h1>
+  <p class="ph-sub">Two disciplines. Unlimited categories. Select a section below to explore the work.</p>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="cat-bar" id="cat-bar">
+  <!-- tabs injected by JS -->
+  <button id="add-cat-tab" onclick="openNewCatModal()">＋ Add Category</button>
+</div>
+
+<!-- MAIN PANELS -->
+<div class="main" id="main-panels">
+  <!-- panels injected by JS -->
+</div>
+
+<!-- ── NEW CATEGORY MODAL ── -->
+<div class="modal-bg" id="new-cat-modal">
+  <div class="modal-box">
+    <div class="modal-title">New Category</div>
+    <span class="modal-label">Category Name</span>
+    <input class="modal-input" id="nc-name" placeholder="e.g. Logo Design, Social Media...">
+    <span class="modal-label">Type</span>
+    <div class="modal-type-grid" id="nc-type-grid">
+      <div class="modal-type-opt selected" data-type="design" onclick="selectType(this)">🎨 Design</div>
+      <div class="modal-type-opt" data-type="video" onclick="selectType(this)">🎬 Video</div>
+      <div class="modal-type-opt" data-type="motion" onclick="selectType(this)">⚡ Motion</div>
+      <div class="modal-type-opt" data-type="branding" onclick="selectType(this)">✦ Branding</div>
+      <div class="modal-type-opt" data-type="ui" onclick="selectType(this)">🖥 UI/UX</div>
+      <div class="modal-type-opt" data-type="custom" onclick="selectType(this)">★ Custom</div>
+    </div>
+    <span class="modal-label">Accent Color</span>
+    <div class="modal-color-grid" id="nc-color-grid">
+      <div class="modal-color-opt selected" data-color="#00f5e4" style="background:#00f5e4;" onclick="selectColor(this)"></div>
+      <div class="modal-color-opt" data-color="#ff3358" style="background:#ff3358;" onclick="selectColor(this)"></div>
+      <div class="modal-color-opt" data-color="#ffd440" style="background:#ffd440;" onclick="selectColor(this)"></div>
+      <div class="modal-color-opt" data-color="#b06aff" style="background:#b06aff;" onclick="selectColor(this)"></div>
+      <div class="modal-color-opt" data-color="#ff7a3d" style="background:#ff7a3d;" onclick="selectColor(this)"></div>
+      <div class="modal-color-opt" data-color="#39ffb0" style="background:#39ffb0;" onclick="selectColor(this)"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('new-cat-modal')">Cancel</button>
+      <button class="modal-confirm" onclick="createCategory()">Create →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── IMAGE ADJUSTER MODAL ── -->
+<div class="img-adj-modal" id="img-adj-modal">
+  <div class="img-adj-box">
+    <div class="img-adj-top">
+      <span class="img-adj-title">✂ Adjust Cover Image</span>
+      <button class="img-adj-close" onclick="closeImgAdj()">✕ Cancel</button>
+    </div>
+    <div class="img-adj-viewport" id="iadj-viewport">
+      <img id="iadj-img" src="" alt="">
+    </div>
+    <div class="img-adj-controls">
+      <!-- Zoom -->
+      <div class="iac-row">
+        <span class="iac-label">Zoom</span>
+        <input class="iac-range" type="range" id="iadj-zoom" min="10" max="300" value="100" oninput="iadjApply()">
+        <span class="iac-val" id="iadj-zoom-val">100%</span>
+      </div>
+      <!-- Position X -->
+      <div class="iac-row">
+        <span class="iac-label">Move X</span>
+        <input class="iac-range" type="range" id="iadj-x" min="-500" max="500" value="0" oninput="iadjApply()">
+        <span class="iac-val" id="iadj-x-val">0px</span>
+      </div>
+      <!-- Position Y -->
+      <div class="iac-row">
+        <span class="iac-label">Move Y</span>
+        <input class="iac-range" type="range" id="iadj-y" min="-500" max="500" value="0" oninput="iadjApply()">
+        <span class="iac-val" id="iadj-y-val">0px</span>
+      </div>
+      <!-- Object Fit presets -->
+      <div class="iac-row" style="align-items:flex-start;flex-direction:column;gap:0.5rem;">
+        <span class="iac-label" style="width:auto;">Fit Mode</span>
+        <div class="iac-fit-row" style="width:100%;">
+          <div class="fit-opt active" id="fit-cover" onclick="setFit('cover',this)">Cover (crop)</div>
+          <div class="fit-opt" id="fit-contain" onclick="setFit('contain',this)">Contain (full)</div>
+          <div class="fit-opt" id="fit-fill" onclick="setFit('fill',this)">Stretch</div>
+        </div>
+      </div>
+      <!-- Action buttons -->
+      <div class="iac-btns">
+        <button class="iac-btn" onclick="iadjReset()">↺ Reset</button>
+        <button class="iac-btn" onclick="iadjFitToWidth()">↔ Fit Width</button>
+        <button class="iac-btn" onclick="iadjFitToHeight()">↕ Fit Height</button>
+        <button class="iac-btn primary" onclick="iadjSave()" style="margin-left:auto;">✓ Apply →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FLIPBOOK MODAL ── -->
+<div class="flipbook-modal" id="flipbook-modal">
+  <div class="flipbook-top">
+    <span class="flipbook-title" id="fb-title">Portfolio Book</span>
+    <button class="flipbook-close" onclick="closeFlipbook()">✕ Close</button>
+  </div>
+  <div class="flipbook-stage">
+    <img class="flipbook-page" id="fb-img" src="" alt="">
+  </div>
+  <div class="flipbook-nav">
+    <button class="fb-btn" id="fb-prev" onclick="fbNav(-1)">← Prev</button>
+    <span class="fb-counter" id="fb-counter">1 / 1</span>
+    <button class="fb-btn" id="fb-next" onclick="fbNav(1)">Next →</button>
+    <div class="fb-zoom">
+      <button class="fb-zoom-btn" onclick="fbZoom(-0.2)">−</button>
+      <button class="fb-zoom-btn" onclick="fbZoom(0.2)">+</button>
+      <button class="fb-zoom-btn" onclick="fbFit()">⤢</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕ Close</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+</div>
+
+<footer>
+  <span class="foot-logo">Studio<span>.</span>Name</span>
+  <p>© 2025 — Crafted with purpose</p>
+  <div class="foot-links">
+    <a href="portfolio.html">Home</a>
+    <a href="portfolio.html#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PASSWORD MODAL                        -->
+<!-- ══════════════════════════════════════ -->
+<div id="pw-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(6,6,10,0.95);backdrop-filter:blur(20px);align-items:center;justify-content:center;">
+  <div style="background:#16161f;border:1px solid rgba(255,255,255,0.12);padding:3rem;width:100%;max-width:400px;text-align:center;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.06em;color:#fff;margin-bottom:0.4rem;">Owner Access</div>
+    <div style="font-size:0.9rem;color:#c8c4f0;margin-bottom:2rem;line-height:1.7;">Enter your password to unlock the portfolio editor.</div>
+    <input id="pw-input" type="password" placeholder="••••••••" maxlength="30"
+      style="width:100%;background:#1c1c28;border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:1.1rem;padding:1rem;outline:none;text-align:center;letter-spacing:0.3em;margin-bottom:1rem;"
+      onkeydown="if(event.key==='Enter')checkPw()">
+    <button onclick="checkPw()" style="width:100%;padding:1rem;background:#ffd440;color:#000;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;margin-bottom:0.75rem;">Unlock Editor →</button>
+    <div id="pw-err" style="font-size:0.82rem;color:#ff3358;min-height:1.2em;font-weight:500;"></div>
+    <div onclick="closePwModal()" style="font-size:0.78rem;color:#7a76a8;margin-top:0.75rem;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#7a76a8'">Cancel</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- WORK PAGE EDITOR PANEL (slide-in)    -->
+<!-- ══════════════════════════════════════ -->
+<div id="work-editor-panel" style="display:none;position:fixed;right:0;top:0;bottom:0;width:340px;z-index:900;background:#0f0f16;border-left:1px solid rgba(255,255,255,0.1);flex-direction:column;overflow:hidden;box-shadow:-20px 0 60px rgba(0,0,0,0.6);">
+
+  <!-- Panel Header -->
+  <div style="padding:1.2rem 1.4rem;background:#16161f;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.06em;color:#ffd440;">Portfolio Editor</div>
+      <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#7a76a8;margin-top:0.2rem;">Press E+E to exit</div>
+    </div>
+    <button onclick="exitEdit()" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.45rem 1rem;border:1.5px solid rgba(255,51,88,0.5);color:#ff3358;background:transparent;cursor:pointer;">✕ Exit</button>
+  </div>
+
+  <!-- Panel Tabs -->
+  <div style="display:flex;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;" id="ep-tabs">
+    <button class="ep-tab active" data-tab="categories" onclick="switchEpTab('categories',this)" style="flex:1;padding:0.9rem;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:none;border-bottom:2px solid #00f5e4;background:transparent;color:#00f5e4;cursor:pointer;">Categories</button>
+    <button class="ep-tab" data-tab="page" onclick="switchEpTab('page',this)" style="flex:1;padding:0.9rem;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:none;border-bottom:2px solid transparent;background:transparent;color:#7a76a8;cursor:pointer;">Page Style</button>
+    <button class="ep-tab" data-tab="settings" onclick="switchEpTab('settings',this)" style="flex:1;padding:0.9rem;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:none;border-bottom:2px solid transparent;background:transparent;color:#7a76a8;cursor:pointer;">Settings</button>
+  </div>
+
+  <!-- Panel Content (scrollable) -->
+  <div style="flex:1;overflow-y:auto;padding:1.2rem;" id="ep-content">
+
+    <!-- CATEGORIES TAB -->
+    <div id="ep-tab-categories">
+
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.75rem;">Active Categories</div>
+        <div id="ep-cat-list" style="display:flex;flex-direction:column;gap:0.4rem;"></div>
+        <button onclick="openNewCatModal()" style="width:100%;margin-top:0.75rem;padding:0.75rem;border:1.5px dashed rgba(0,245,228,0.3);background:transparent;color:#00f5e4;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">＋ New Category</button>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:1.2rem;margin-bottom:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.75rem;">Add Project to Active Category</div>
+        <button onclick="addProject(state.activeCat)" style="width:100%;padding:0.85rem;border:1.5px solid rgba(0,245,228,0.4);background:rgba(0,245,228,0.08);color:#00f5e4;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">＋ Add Project</button>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.75rem;">Actions</div>
+        <button onclick="saveData()" style="width:100%;margin-bottom:0.5rem;padding:0.75rem;border:1.5px solid rgba(57,255,176,0.4);background:rgba(57,255,176,0.08);color:#39ffb0;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">💾 Save All</button>
+        <button onclick="exportData()" style="width:100%;padding:0.75rem;border:1.5px solid rgba(255,212,64,0.4);background:rgba(255,212,64,0.06);color:#ffd440;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">📋 Export Data</button>
+      </div>
+    </div>
+
+    <!-- PAGE STYLE TAB -->
+    <div id="ep-tab-page" style="display:none;">
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Page Title</div>
+        <input id="ep-page-title" style="width:100%;background:#1c1c28;border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Outfit',sans-serif;font-size:0.9rem;padding:0.7rem 0.9rem;outline:none;" value="The Work" oninput="updatePageTitle(this.value)">
+      </div>
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Page Subtitle</div>
+        <textarea id="ep-page-sub" style="width:100%;background:#1c1c28;border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Outfit',sans-serif;font-size:0.88rem;padding:0.7rem 0.9rem;outline:none;resize:none;min-height:70px;">Two disciplines. Unlimited categories.</textarea>
+      </div>
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Accent Color</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <div style="width:32px;height:32px;background:#ff3358;border:1px solid rgba(255,255,255,0.15);position:relative;overflow:hidden;flex-shrink:0;">
+            <input type="color" value="#ff3358" style="position:absolute;inset:-4px;opacity:0;cursor:pointer;width:calc(100%+8px);height:calc(100%+8px);" oninput="this.parentElement.style.background=this.value">
+          </div>
+          <input style="flex:1;background:#1c1c28;border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Outfit',sans-serif;font-size:0.82rem;padding:0.5rem 0.7rem;outline:none;" value="#ff3358" placeholder="Accent color hex">
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Card Style</div>
+        <select style="width:100%;background:#1c1c28;border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Outfit',sans-serif;font-size:0.88rem;padding:0.7rem 0.9rem;outline:none;cursor:pointer;">
+          <option>Dark Cards (Default)</option>
+          <option>Glass / Frosted</option>
+          <option>Outlined Only</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="ep-tab-settings" style="display:none;">
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Change Password</div>
+        <input type="password" id="ep-new-pw" placeholder="New password" style="width:100%;background:#1c1c28;border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Outfit',sans-serif;font-size:0.9rem;padding:0.7rem 0.9rem;outline:none;margin-bottom:0.5rem;">
+        <button onclick="changePw()" style="width:100%;padding:0.7rem;border:1.5px solid rgba(255,212,64,0.4);background:transparent;color:#ffd440;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Update Password</button>
+        <div id="pw-change-msg" style="font-size:0.78rem;color:#39ffb0;margin-top:0.5rem;min-height:1em;"></div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:1.2rem;margin-bottom:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Grid Columns</div>
+        <div style="display:flex;gap:0.5rem;">
+          <button onclick="setGridCols(2,this)" style="flex:1;padding:0.6rem;border:1.5px solid rgba(0,245,228,0.5);background:rgba(0,245,228,0.1);color:#00f5e4;font-size:0.75rem;font-weight:700;cursor:pointer;">2 Col</button>
+          <button onclick="setGridCols(3,this)" style="flex:1;padding:0.6rem;border:1.5px solid rgba(255,255,255,0.15);background:transparent;color:#b8b4e0;font-size:0.75rem;font-weight:700;cursor:pointer;">3 Col</button>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:1.2rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7a76a8;margin-bottom:0.6rem;">Danger Zone</div>
+        <button onclick="if(confirm('Clear ALL portfolio data?')){localStorage.removeItem('portfolio_data');location.reload();}" style="width:100%;padding:0.7rem;border:1.5px solid rgba(255,51,88,0.4);background:transparent;color:#ff3358;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">🗑 Clear All Data</button>
+      </div>
+    </div>
+
+  </div><!-- /ep-content -->
+</div><!-- /work-editor-panel -->
+
+<script>
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+let state = {
+  editing: false,
+  activeCat: 0,
+  categories: [
+    { id: 'graphic-design', name: 'Graphic Design', type: 'design', color: '#00f5e4', projects: [] },
+    { id: 'video-editing',  name: 'Video Editing',  type: 'video',  color: '#ff3358', projects: [] }
+  ],
+  newCatType: 'design',
+  newCatColor: '#00f5e4',
+  fbPages: [], fbIdx: 0, fbZoom: 1
+};
+
+// ── SECRET E+E TRIGGER ───────────────────────
+const OWNER_PW = 'studio2025'; // ← change this to your password
+let eeKeys = [], eeTimer = null;
+document.addEventListener('keydown', ev => {
+  const tag = document.activeElement ? document.activeElement.tagName : '';
+  const ce = document.activeElement ? document.activeElement.contentEditable : '';
+  if (['INPUT','TEXTAREA'].includes(tag) || ce === 'true') return;
+  if (ev.key === 'e' || ev.key === 'E') {
+    eeKeys.push(1);
+    clearTimeout(eeTimer);
+    eeTimer = setTimeout(() => { eeKeys = []; }, 700);
+    if (eeKeys.length >= 2) {
+      eeKeys = [];
+      state.editing ? exitEdit() : openPwModal();
+    }
+  }
+  if (ev.key === 'Escape' && state.editing) exitEdit();
+});
+
+function openPwModal() {
+  document.getElementById('pw-modal').classList.add('open');
+  setTimeout(() => { const i = document.getElementById('pw-input'); if(i) i.focus(); }, 120);
+}
+function closePwModal() {
+  document.getElementById('pw-modal').classList.remove('open');
+  const i = document.getElementById('pw-input');
+  const e = document.getElementById('pw-err');
+  if(i) i.value = '';
+  if(e) e.textContent = '';
+}
+function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  const err = document.getElementById('pw-err');
+  const activePw = window._currentPw || OWNER_PW;
+  if (val === activePw) {
+    closePwModal(); enterEdit();
+  } else {
+    err.textContent = 'Wrong password. Try again.';
+    const inp = document.getElementById('pw-input');
+    inp.style.borderColor = '#ff3358';
+    inp.value = '';
+    inp.focus();
+    setTimeout(() => { inp.style.borderColor = ''; err.textContent = ''; }, 2000);
+  }
+}
+
+function enterEdit() {
+  state.editing = true;
+  document.body.classList.add('editing');
+  document.getElementById('edit-bar').classList.add('show');
+  document.getElementById('work-editor-panel').classList.add('open');
+  makeEditable(true);
+}
+function exitEdit() {
+  state.editing = false;
+  document.body.classList.remove('editing');
+  document.getElementById('edit-bar').classList.remove('show');
+  document.getElementById('work-editor-panel').classList.remove('open');
+  makeEditable(false);
+}
+function makeEditable(on) {
+  document.querySelectorAll('.card-title,.card-desc').forEach(el => {
+    el.contentEditable = on ? 'true' : 'false';
+  });
+}
+
+// ── SAVE (localStorage) ──────────────────────
+function saveData() {
+  const saved = state.categories.map(cat => ({
+    id: cat.id, name: cat.name, type: cat.type, color: cat.color,
+    projects: cat.projects.map(p => ({
+      id: p.id, title: p.title, desc: p.desc,
+      status: p.status, featured: p.featured,
+      coverSrc: p.coverSrc,
+      imgFit:  p.imgFit  || 'cover',
+      imgZoom: p.imgZoom || 1,
+      imgPanX: p.imgPanX || 0,
+      imgPanY: p.imgPanY || 0,
+      thumbH:  p.thumbH  || 280,
+      type: p.type, color: p.color,
+      client: p.client, software: p.software, tags: p.tags || [],
+      embedUrl: p.embedUrl || '',
+      gallery:  p.gallery  || [],
+      flipbook: p.flipbook || [],
+      wide: p.wide || false
+    }))
+  }));
+  localStorage.setItem('portfolio_data', JSON.stringify(saved));
+  const btn = document.querySelector('.eb-save');
+  if (btn) { btn.textContent = '✓ Saved!'; setTimeout(() => btn.textContent = '💾 Save', 2000); }
+}
+
+function loadData() {
+  const raw = localStorage.getItem('portfolio_data');
+  if (raw) { try { state.categories = JSON.parse(raw); } catch(e){} }
+  // restore saved password if any
+  const savedPw = localStorage.getItem('portfolio_pw');
+  if (savedPw) { window._currentPw = savedPw; }
+}
+
+// ── TABS ─────────────────────────────────────
+function renderTabs() {
+  const bar = document.getElementById('cat-bar');
+  bar.innerHTML = '';
+  state.categories.forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (i === state.activeCat ? ' active' : '');
+    const count = cat.projects.filter(p => p.status === 'published' || state.editing).length;
+    btn.innerHTML = `${cat.name} <span class="cat-count">${count}</span>`;
+    btn.onclick = () => { state.activeCat = i; render(); };
+    bar.appendChild(btn);
+  });
+  const addBtn = document.createElement('button');
+  addBtn.id = 'add-cat-tab';
+  addBtn.innerHTML = '＋ Add Category';
+  addBtn.onclick = openNewCatModal;
+  bar.appendChild(addBtn);
+}
+
+// ── PANELS ───────────────────────────────────
+function renderPanels() {
+  const main = document.getElementById('main-panels');
+  main.innerHTML = '';
+  state.categories.forEach((cat, ci) => {
+    const panel = document.createElement('div');
+    panel.className = 'cat-panel' + (ci === state.activeCat ? ' active' : '');
+    panel.id = 'panel-' + ci;
+
+    const visProjects = state.editing ? cat.projects : cat.projects.filter(p => p.status === 'published');
+
+    panel.innerHTML = `
+      <div class="panel-hd">
+        <div>
+          <div class="panel-title" style="color:${cat.color}">${cat.name}</div>
+          <div class="panel-desc">${typeDesc(cat.type)}</div>
+        </div>
+        <div class="panel-hd-right">
+          <button class="btn-delete-cat" onclick="deleteCategory(${ci})">🗑 Delete Category</button>
+          <button class="btn-add-project" onclick="addProject(${ci})">＋ Add Project</button>
+        </div>
+      </div>
+      <div class="proj-grid" id="grid-${ci}">
+        ${visProjects.length === 0 ? emptyState(cat) : ''}
+      </div>
+    `;
+    main.appendChild(panel);
+
+    if (visProjects.length > 0) {
+      visProjects.forEach(proj => renderCard(ci, proj));
+    }
+  });
+}
+
+function emptyState(cat) {
+  return `<div class="empty-state" style="grid-column:span 2;">
+    <div class="empty-icon">📂</div>
+    <div class="empty-title">No Projects Yet</div>
+    <div class="empty-sub">Press <strong style="color:var(--gold)">E + E</strong> to enter edit mode, then click <strong>+ Add Project</strong> to start building your portfolio.</div>
+  </div>`;
+}
+
+function typeDesc(type) {
+  const map = {
+    design: 'Social media content, brand visuals, posters — all image-based design work.',
+    video:  'Brand films, commercials, reels — video editing work.',
+    motion: 'Animated intros, kinetic typography, motion graphics.',
+    branding: 'Logos, brand identities, visual systems.',
+    ui:     'App interfaces, web design, UI/UX work.',
+    custom: 'Custom category.'
+  };
+  return map[type] || 'Creative work.';
+}
+
+// ── CARD RENDER ───────────────────────────────
+function renderCard(ci, proj) {
+  const grid = document.getElementById('grid-' + ci);
+  if (!grid) return;
+
+  const card = document.createElement('div');
+  card.className = 'proj-card' + (proj.wide ? ' wide' : '') + (proj.featured ? ' featured' : '');
+  card.id = 'card-' + proj.id;
+  card.draggable = true;
+  card.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', proj.id + ',' + ci));
+  card.addEventListener('dragover', e => e.preventDefault());
+  card.addEventListener('drop', e => {
+    e.preventDefault();
+    const [dragId, dragCi] = e.dataTransfer.getData('text/plain').split(',');
+    if (dragCi == ci) reorderProjects(ci, dragId, proj.id);
+  });
+
+  const isVideo = ['video','motion'].includes(state.categories[ci].type);
+  const cat = state.categories[ci];
+
+  // status
+  const statusBadge = proj.featured ? `<div class="status-badge featured">★ Featured</div>` :
+    `<div class="status-badge ${proj.status}">${proj.status}</div>`;
+
+  // gallery strip (design only)
+  const galleryHtml = !isVideo ? `
+    <div class="gallery-strip" id="gstrip-${proj.id}">
+      ${(proj.gallery||[]).map((src,gi) => `<img class="gallery-thumb" src="${src}" onclick="openLightbox('${src}')" title="View">`).join('')}
+      <div class="gallery-add" title="Add image"><input type="file" accept="image/*" multiple onchange="addGalleryImages('${proj.id}','${ci}',this)">+</div>
+    </div>
+    ${(proj.flipbook||[]).length > 0 ? `<button class="flipbook-btn" onclick="openFlipbook('${proj.id}')">📖 View Flipbook (${proj.flipbook.length} pages)</button>` : ''}
+    <div class="embed-field" style="display:none;"></div>
+  ` : `
+    <div class="gallery-strip"></div>
+    <div class="embed-field">
+      <div class="mf-label">YouTube / Vimeo Link</div>
+      <input class="embed-input" placeholder="https://youtube.com/watch?v=..." value="${proj.embedUrl||''}" onchange="proj.embedUrl=this.value" oninput="updateProjField('${proj.id}','embedUrl',this.value)">
+    </div>
+  `;
+
+  card.innerHTML = `
+    <div class="drag-handle" title="Drag to reorder">⠿</div>
+    <div class="card-controls">
+      <button class="cc-btn cc-feat" onclick="toggleFeatured('${proj.id}','${ci}')">${proj.featured ? '★ Unfeature' : '★ Feature'}</button>
+      <button class="cc-btn cc-draft" onclick="toggleStatus('${proj.id}','${ci}')">${proj.status === 'published' ? 'Set Draft' : 'Publish'}</button>
+      <button class="cc-btn" style="background:var(--orange);color:#fff;" onclick="toggleWide('${proj.id}','${ci}')">↔ ${proj.wide?'Normal':'Wide'}</button>
+      <button class="cc-btn cc-del" onclick="deleteProject('${proj.id}','${ci}')">🗑 Delete</button>
+    </div>
+    ${statusBadge}
+    <div class="card-thumb" id="thumb-${proj.id}" style="height:${proj.thumbH||(proj.wide?340:280)}px;">
+
+      <!-- SIZE PRESETS -->
+      <div class="thumb-size-bar">
+        <button class="tsb-btn" onclick="setThumbPreset('${proj.id}',160,this)">S</button>
+        <button class="tsb-btn" onclick="setThumbPreset('${proj.id}',280,this)">M</button>
+        <button class="tsb-btn" onclick="setThumbPreset('${proj.id}',400,this)">L</button>
+        <button class="tsb-btn" onclick="setThumbPreset('${proj.id}',540,this)">XL</button>
+        <button class="tsb-btn" onclick="setThumbRatio('${proj.id}','16:9')" title="16:9">16:9</button>
+        <button class="tsb-btn" onclick="setThumbRatio('${proj.id}','4:3')" title="4:3">4:3</button>
+        <button class="tsb-btn" onclick="setThumbRatio('${proj.id}','1:1')" title="Square">1:1</button>
+        <button class="tsb-btn" onclick="setThumbRatio('${proj.id}','3:4')" title="Portrait">3:4</button>
+      </div>
+
+      <span class="type-badge" style="background:${cat.color};color:${isLight(cat.color)?'#000':'#fff'}">${cat.name}</span>
+      <div class="thumb-ph ${proj.coverSrc ? 'hidden' : ''}" id="ph-${proj.id}">
+        <div class="thumb-ph-icon">${typeIcon(cat.type)}</div>
+        <div class="thumb-ph-text">Upload Cover</div>
+      </div>
+      <img id="cov-${proj.id}"
+        src="${proj.coverSrc||''}"
+        class="${proj.coverSrc?'has-img':''}"
+        style="object-fit:${proj.imgFit||'cover'};transform:scale(${proj.imgZoom||1}) translate(${proj.imgPanX||0}px,${proj.imgPanY||0}px);transform-origin:center center;"
+        alt="">
+      <div class="thumb-upload-overlay">
+        <input type="file" accept="image/*" onchange="uploadCover('${proj.id}',this)">
+        <span class="tuo-icon">📁</span>
+        <span class="tuo-text">${proj.coverSrc ? 'Replace Cover' : 'Upload Cover'}</span>
+      </div>
+      ${proj.coverSrc ? `<button class="img-adj-trigger" onclick="event.stopPropagation();openImgAdj('${proj.id}')" title="Adjust image" style="position:absolute;bottom:22px;left:0.6rem;z-index:15;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.65rem;background:rgba(0,245,228,0.2);border:1px solid rgba(0,245,228,0.5);color:#00f5e4;cursor:pointer;display:none;">✂ Adjust</button>` : ''}
+
+      <!-- DRAG-TO-RESIZE HANDLE -->
+      <div class="thumb-resize-handle" id="rh-${proj.id}" title="Drag to resize"></div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat-label" style="color:${cat.color}">${cat.name}</div>
+      <div class="card-title" id="title-${proj.id}" contenteditable="false">${proj.title}</div>
+      <div class="card-desc"  id="desc-${proj.id}"  contenteditable="false">${proj.desc}</div>
+      ${galleryHtml}
+      <div class="card-meta">
+        ${(proj.tags||[]).map(t => `<span class="card-tag">${t}</span>`).join('')}
+      </div>
+      <div class="card-meta-fields">
+        <div class="mf-row">
+          <div><div class="mf-label">Client Name</div><input class="mf-input" placeholder="Client / Brand" value="${proj.client||''}" oninput="updateProjField('${proj.id}','client',this.value)"></div>
+          <div><div class="mf-label">Software Used</div><input class="mf-input" placeholder="Ps, Pr, Ae..." value="${proj.software||''}" oninput="updateProjField('${proj.id}','software',this.value)"></div>
+        </div>
+        <div>
+          <div class="mf-label">Tags (comma separated)</div>
+          <input class="mf-input" placeholder="branding, social, logo" value="${(proj.tags||[]).join(', ')}" oninput="updateTags('${proj.id}',this.value)">
+        </div>
+        ${!isVideo ? `<div>
+          <div class="mf-label">Add Flipbook Pages (images)</div>
+          <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <label style="font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.55rem 1.2rem;background:rgba(176,106,255,0.15);border:1px solid rgba(176,106,255,0.4);color:var(--violet);cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;">
+              📖 Add Pages <input type="file" accept="image/*,.pdf" multiple style="display:none" onchange="addFlipbookPages('${proj.id}','${ci}',this)">
+            </label>
+            <span style="font-size:0.78rem;color:var(--t4);">${(proj.flipbook||[]).length} page(s) added</span>
+          </div>
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+
+  grid.appendChild(card);
+
+  // make text editable if in edit mode
+  if (state.editing) {
+    card.querySelector('.card-title').contentEditable = 'true';
+    card.querySelector('.card-desc').contentEditable = 'true';
+  }
+
+  // sync text changes back to state
+  card.querySelector('.card-title').addEventListener('input', function() {
+    updateProjField(proj.id, 'title', this.innerText.trim());
+  });
+  card.querySelector('.card-desc').addEventListener('input', function() {
+    updateProjField(proj.id, 'desc', this.innerText.trim());
+  });
+
+  // ── DRAG-TO-RESIZE ──────────────────────────
+  const rh    = card.querySelector('.thumb-resize-handle');
+  const thumb = card.querySelector('.card-thumb');
+  if (rh && thumb) {
+    let resizing = false, startY = 0, startH = 0;
+    rh.addEventListener('mousedown', e => {
+      if (!state.editing) return;
+      e.preventDefault(); e.stopPropagation();
+      resizing = true; startY = e.clientY; startH = thumb.offsetHeight;
+      document.body.style.cursor = 'ns-resize'; document.body.style.userSelect = 'none';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!resizing) return;
+      const newH = Math.max(100, Math.min(800, startH + (e.clientY - startY)));
+      thumb.style.height = newH + 'px';
+      const p2 = findProjAny(proj.id); if (p2) p2.thumbH = newH;
+    });
+    document.addEventListener('mouseup', () => {
+      if (resizing) { resizing = false; document.body.style.cursor=''; document.body.style.userSelect=''; }
+    });
+    // touch support
+    rh.addEventListener('touchstart', e => {
+      if (!state.editing) return;
+      e.preventDefault(); resizing = true; startY = e.touches[0].clientY; startH = thumb.offsetHeight;
+    }, {passive:false});
+    document.addEventListener('touchmove', e => {
+      if (!resizing) return;
+      const newH = Math.max(100, Math.min(800, startH + (e.touches[0].clientY - startY)));
+      thumb.style.height = newH + 'px';
+      const p2 = findProjAny(proj.id); if (p2) p2.thumbH = newH;
+    });
+    document.addEventListener('touchend', () => { resizing = false; });
+  }
+}
+
+// ── PROJECT ACTIONS ──────────────────────────
+let projCounter = Date.now();
+
+function addProject(ci) {
+  const cat = state.categories[ci];
+  const proj = {
+    id: 'p' + (projCounter++),
+    title: 'New Project',
+    desc: 'Click to edit this description.',
+    status: 'draft',
+    featured: false,
+    coverSrc: '',
+    type: cat.type,
+    color: cat.color,
+    client: '', software: '', tags: [],
+    embedUrl: '', gallery: [], flipbook: [],
+    wide: false
+  };
+  cat.projects.push(proj);
+
+  // clear empty state
+  const grid = document.getElementById('grid-' + ci);
+  const empty = grid.querySelector('.empty-state');
+  if (empty) empty.remove();
+
+  renderCard(ci, proj);
+  renderTabs();
+  if (state.editing) makeEditable(true);
+}
+
+function deleteProject(projId, ci) {
+  if (!confirm('Delete this project?')) return;
+  state.categories[ci].projects = state.categories[ci].projects.filter(p => p.id !== projId);
+  render();
+}
+
+function toggleFeatured(projId, ci) {
+  const p = findProj(projId, ci);
+  if (p) { p.featured = !p.featured; render(); }
+}
+function toggleStatus(projId, ci) {
+  const p = findProj(projId, ci);
+  if (p) { p.status = p.status === 'published' ? 'draft' : 'published'; render(); }
+}
+function toggleWide(projId, ci) {
+  const p = findProj(projId, ci);
+  if (p) { p.wide = !p.wide; render(); }
+}
+function updateProjField(projId, field, val) {
+  const p = findProjAny(projId);
+  if (p) p[field] = val;
+}
+function updateTags(projId, val) {
+  const p = findProjAny(projId);
+  if (p) {
+    p.tags = val.split(',').map(t => t.trim()).filter(Boolean);
+    // re-render tags inline
+    const meta = document.querySelector(`#card-${projId} .card-meta`);
+    if (meta) meta.innerHTML = p.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+  }
+}
+
+function findProj(projId, ci) { return state.categories[ci].projects.find(p => p.id === projId); }
+function findProjAny(projId) {
+  for (const cat of state.categories) { const p = cat.projects.find(p => p.id === projId); if (p) return p; }
+  return null;
+}
+
+// ── THUMB SIZE PRESETS ────────────────────────
+function setThumbPreset(projId, h, btn) {
+  const thumb = document.getElementById('thumb-' + projId);
+  if (!thumb) return;
+  thumb.style.height = h + 'px';
+  const p = findProjAny(projId);
+  if (p) p.thumbH = h;
+  // highlight active preset
+  const bar = thumb.querySelector('.thumb-size-bar');
+  if (bar) bar.querySelectorAll('.tsb-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function setThumbRatio(projId, ratio) {
+  const thumb = document.getElementById('thumb-' + projId);
+  if (!thumb) return;
+  const w = thumb.offsetWidth;
+  const map = { '16:9': 9/16, '4:3': 3/4, '1:1': 1, '3:4': 4/3 };
+  const h = Math.round(w * (map[ratio] || 9/16));
+  thumb.style.height = h + 'px';
+  const p = findProjAny(projId);
+  if (p) p.thumbH = h;
+  // highlight
+  const bar = thumb.querySelector('.thumb-size-bar');
+  if (bar) {
+    bar.querySelectorAll('.tsb-btn').forEach(b => b.classList.remove('active'));
+    bar.querySelectorAll('.tsb-btn').forEach(b => { if (b.textContent === ratio) b.classList.add('active'); });
+  }
+}
+
+function reorderProjects(ci, dragId, dropId) {
+  const projs = state.categories[ci].projects;
+  const from = projs.findIndex(p => p.id === dragId);
+  const to   = projs.findIndex(p => p.id === dropId);
+  if (from < 0 || to < 0) return;
+  const [moved] = projs.splice(from, 1);
+  projs.splice(to, 0, moved);
+  render();
+}
+
+// ── UPLOAD COVER ─────────────────────────────
+function uploadCover(projId, input) {
+  if (!input.files[0]) return;
+  readFile(input.files[0], src => {
+    const p = findProjAny(projId);
+    if (p) { p.coverSrc = src; p.imgFit = 'cover'; p.imgX = 50; p.imgY = 50; p.imgZoom = 1; }
+    const img = document.getElementById('cov-' + projId);
+    const ph  = document.getElementById('ph-' + projId);
+    if (img) {
+      img.src = src;
+      img.classList.add('has-img');
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = '50% 50%';
+      img.style.transform = 'scale(1)';
+    }
+    if (ph) ph.classList.add('hidden');
+    // add adjust button if not already there
+    const thumb = document.getElementById('thumb-' + projId);
+    if (thumb && !thumb.querySelector('.img-adj-trigger')) {
+      const adjBtn = document.createElement('button');
+      adjBtn.className = 'img-adj-trigger';
+      adjBtn.innerHTML = '✂ Adjust';
+      adjBtn.title = 'Adjust image position & zoom';
+      adjBtn.style.cssText = 'position:absolute;bottom:0.6rem;left:0.6rem;z-index:10;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.65rem;background:rgba(0,245,228,0.2);border:1px solid rgba(0,245,228,0.5);color:#00f5e4;cursor:pointer;display:none;';
+      adjBtn.onclick = (e) => { e.stopPropagation(); openImgAdj(projId); };
+      thumb.appendChild(adjBtn);
+    }
+    const tuo = document.querySelector(`#thumb-${projId} .tuo-text`);
+    if (tuo) tuo.textContent = 'Replace Cover';
+  });
+}
+
+// ── IMAGE ADJUSTER ────────────────────────────
+let iadjProjId = null, iadjFitMode = 'cover';
+let iadjDragging = false, iadjDragStartX = 0, iadjDragStartY = 0, iadjDragOffX = 0, iadjDragOffY = 0;
+
+function openImgAdj(projId) {
+  const p = findProjAny(projId);
+  if (!p || !p.coverSrc) return;
+  iadjProjId = projId;
+  iadjFitMode = p.imgFit || 'cover';
+
+  const modal = document.getElementById('img-adj-modal');
+  const img   = document.getElementById('iadj-img');
+  img.src = p.coverSrc;
+
+  // restore saved values
+  document.getElementById('iadj-zoom').value = Math.round((p.imgZoom || 1) * 100);
+  document.getElementById('iadj-x').value    = p.imgPanX || 0;
+  document.getElementById('iadj-y').value    = p.imgPanY || 0;
+
+  // fit mode buttons
+  document.querySelectorAll('.fit-opt').forEach(o => o.classList.remove('active'));
+  const fo = document.getElementById('fit-' + iadjFitMode);
+  if (fo) fo.classList.add('active');
+
+  iadjApply();
+  modal.classList.add('open');
+  setupIadjDrag();
+}
+
+function closeImgAdj() {
+  document.getElementById('img-adj-modal').classList.remove('open');
+  iadjProjId = null;
+}
+
+function iadjApply() {
+  const zoom = +document.getElementById('iadj-zoom').value / 100;
+  const panX = +document.getElementById('iadj-x').value;
+  const panY = +document.getElementById('iadj-y').value;
+  document.getElementById('iadj-zoom-val').textContent = Math.round(zoom*100) + '%';
+  document.getElementById('iadj-x-val').textContent = panX + 'px';
+  document.getElementById('iadj-y-val').textContent = panY + 'px';
+
+  const img = document.getElementById('iadj-img');
+  const vp  = document.getElementById('iadj-viewport');
+  const vpW = vp.clientWidth, vpH = vp.clientHeight;
+
+  if (iadjFitMode === 'cover' || iadjFitMode === 'contain') {
+    img.style.width  = '';
+    img.style.height = '';
+    img.style.objectFit = iadjFitMode;
+    img.style.position  = 'absolute';
+    img.style.inset     = '0';
+    img.style.width     = '100%';
+    img.style.height    = '100%';
+    img.style.transform = `scale(${zoom}) translate(${panX}px, ${panY}px)`;
+    img.style.transformOrigin = 'center center';
+  } else {
+    img.style.objectFit = 'fill';
+    img.style.width = '100%'; img.style.height = '100%';
+    img.style.transform = `scale(${zoom}) translate(${panX}px, ${panY}px)`;
+    img.style.transformOrigin = 'center center';
+  }
+}
+
+function iadjSave() {
+  const p = findProjAny(iadjProjId);
+  if (!p) return;
+  const zoom = +document.getElementById('iadj-zoom').value / 100;
+  const panX = +document.getElementById('iadj-x').value;
+  const panY = +document.getElementById('iadj-y').value;
+
+  p.imgFit  = iadjFitMode;
+  p.imgZoom = zoom;
+  p.imgPanX = panX;
+  p.imgPanY = panY;
+
+  // apply to card image
+  const img = document.getElementById('cov-' + iadjProjId);
+  if (img) {
+    img.style.objectFit      = iadjFitMode === 'fill' ? 'fill' : iadjFitMode;
+    img.style.width          = '100%';
+    img.style.height         = '100%';
+    img.style.transform      = `scale(${zoom}) translate(${panX}px, ${panY}px)`;
+    img.style.transformOrigin = 'center center';
+    img.style.position       = 'absolute';
+    img.style.inset          = '0';
+  }
+
+  closeImgAdj();
+
+  // flash confirm
+  const thumb = document.getElementById('thumb-' + iadjProjId);
+  if (thumb) {
+    thumb.style.outline = '2px solid #00f5e4';
+    setTimeout(() => { thumb.style.outline = ''; }, 1200);
+  }
+}
+
+function iadjReset() {
+  document.getElementById('iadj-zoom').value = 100;
+  document.getElementById('iadj-x').value = 0;
+  document.getElementById('iadj-y').value = 0;
+  iadjFitMode = 'cover';
+  document.querySelectorAll('.fit-opt').forEach(o => o.classList.remove('active'));
+  document.getElementById('fit-cover').classList.add('active');
+  iadjApply();
+}
+
+function iadjFitToWidth() {
+  const img = document.getElementById('iadj-img');
+  const vp  = document.getElementById('iadj-viewport');
+  if (!img.naturalWidth) return;
+  const scale = (vp.clientWidth / img.naturalWidth) * 100;
+  document.getElementById('iadj-zoom').value = Math.min(300, Math.round(scale));
+  document.getElementById('iadj-x').value = 0;
+  document.getElementById('iadj-y').value = 0;
+  iadjApply();
+}
+
+function iadjFitToHeight() {
+  const img = document.getElementById('iadj-img');
+  const vp  = document.getElementById('iadj-viewport');
+  if (!img.naturalHeight) return;
+  const scale = (vp.clientHeight / img.naturalHeight) * 100;
+  document.getElementById('iadj-zoom').value = Math.min(300, Math.round(scale));
+  document.getElementById('iadj-x').value = 0;
+  document.getElementById('iadj-y').value = 0;
+  iadjApply();
+}
+
+function setFit(mode, el) {
+  iadjFitMode = mode;
+  document.querySelectorAll('.fit-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  iadjApply();
+}
+
+// drag to pan inside adjuster
+function setupIadjDrag() {
+  const vp = document.getElementById('iadj-viewport');
+  vp.onmousedown = (e) => {
+    iadjDragging = true; vp.classList.add('dragging');
+    iadjDragStartX = e.clientX - +document.getElementById('iadj-x').value;
+    iadjDragStartY = e.clientY - +document.getElementById('iadj-y').value;
+  };
+  vp.onmousemove = (e) => {
+    if (!iadjDragging) return;
+    const newX = Math.max(-500, Math.min(500, e.clientX - iadjDragStartX));
+    const newY = Math.max(-500, Math.min(500, e.clientY - iadjDragStartY));
+    document.getElementById('iadj-x').value = newX;
+    document.getElementById('iadj-y').value = newY;
+    iadjApply();
+  };
+  vp.onmouseup = vp.onmouseleave = () => { iadjDragging = false; vp.classList.remove('dragging'); };
+}
+
+// ── GALLERY ──────────────────────────────────
+function addGalleryImages(projId, ci, input) {
+  const files = Array.from(input.files);
+  const p = findProjAny(projId);
+  if (!p) return;
+  let done = 0;
+  files.forEach(f => readFile(f, src => {
+    p.gallery = p.gallery || [];
+    p.gallery.push(src);
+    const strip = document.getElementById('gstrip-' + projId);
+    if (strip) {
+      const img = document.createElement('img');
+      img.className = 'gallery-thumb'; img.src = src;
+      img.onclick = () => openLightbox(src);
+      strip.insertBefore(img, strip.querySelector('.gallery-add'));
+    }
+    done++;
+    if (done === files.length) renderTabs();
+  }));
+}
+
+// ── FLIPBOOK ──────────────────────────────────
+function addFlipbookPages(projId, ci, input) {
+  const files = Array.from(input.files);
+  const p = findProjAny(projId);
+  if (!p) return;
+  let done = 0;
+  files.forEach(f => {
+    if (f.type === 'application/pdf') {
+      // treat PDF as single page for demo
+      readFile(f, src => {
+        p.flipbook = p.flipbook || [];
+        p.flipbook.push(src);
+        done++; if (done === files.length) render();
+      });
+    } else {
+      readFile(f, src => {
+        p.flipbook = p.flipbook || [];
+        p.flipbook.push(src);
+        done++; if (done === files.length) render();
+      });
+    }
+  });
+}
+
+let fbProjId = null;
+function openFlipbook(projId) {
+  const p = findProjAny(projId);
+  if (!p || !p.flipbook || p.flipbook.length === 0) return;
+  fbProjId = projId;
+  state.fbPages = p.flipbook;
+  state.fbIdx = 0;
+  state.fbZoom = 1;
+  updateFbView();
+  document.getElementById('flipbook-modal').classList.add('open');
+  document.getElementById('fb-title').textContent = p.title + ' — Portfolio Book';
+}
+function closeFlipbook() { document.getElementById('flipbook-modal').classList.remove('open'); }
+function fbNav(dir) {
+  state.fbIdx = Math.max(0, Math.min(state.fbPages.length - 1, state.fbIdx + dir));
+  updateFbView();
+}
+function updateFbView() {
+  const img = document.getElementById('fb-img');
+  img.src = state.fbPages[state.fbIdx];
+  img.style.transform = `scale(${state.fbZoom})`;
+  document.getElementById('fb-counter').textContent = `${state.fbIdx + 1} / ${state.fbPages.length}`;
+  document.getElementById('fb-prev').disabled = state.fbIdx === 0;
+  document.getElementById('fb-next').disabled = state.fbIdx === state.fbPages.length - 1;
+}
+function fbZoom(delta) { state.fbZoom = Math.max(0.5, Math.min(3, state.fbZoom + delta)); updateFbView(); }
+function fbFit() { state.fbZoom = 1; updateFbView(); }
+
+// ── LIGHTBOX ──────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+// ── CATEGORY MANAGEMENT ──────────────────────
+function openNewCatModal() {
+  document.getElementById('new-cat-modal').classList.add('open');
+  state.newCatType = 'design'; state.newCatColor = '#00f5e4';
+  document.querySelectorAll('.modal-type-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelector('[data-type="design"]').classList.add('selected');
+  document.querySelectorAll('.modal-color-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelector('[data-color="#00f5e4"]').classList.add('selected');
+  document.getElementById('nc-name').value = '';
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function selectType(el) {
+  document.querySelectorAll('.modal-type-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.newCatType = el.dataset.type;
+}
+function selectColor(el) {
+  document.querySelectorAll('.modal-color-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.newCatColor = el.dataset.color;
+}
+function createCategory() {
+  const name = document.getElementById('nc-name').value.trim();
+  if (!name) { document.getElementById('nc-name').focus(); return; }
+  const id = name.toLowerCase().replace(/\s+/g,'-') + '-' + Date.now();
+  state.categories.push({ id, name, type: state.newCatType, color: state.newCatColor, projects: [] });
+  state.activeCat = state.categories.length - 1;
+  closeModal('new-cat-modal');
+  render();
+}
+function deleteCategory(ci) {
+  if (!confirm(`Delete category "${state.categories[ci].name}" and all its projects?`)) return;
+  state.categories.splice(ci, 1);
+  state.activeCat = Math.max(0, state.activeCat - 1);
+  render();
+}
+
+// ── HELPERS ──────────────────────────────────
+function readFile(file, cb) {
+  const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file);
+}
+function typeIcon(type) {
+  return {design:'🎨',video:'🎬',motion:'⚡',branding:'✦',ui:'🖥',custom:'★'}[type] || '📂';
+}
+function isLight(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return (r*0.299 + g*0.587 + b*0.114) > 150;
+}
+
+// ── MAIN RENDER ───────────────────────────────
+function render() { renderTabs(); renderPanels(); renderEditorCatList(); if (state.editing) makeEditable(true); }
+
+// ── EDITOR PANEL FUNCTIONS ────────────────────
+function renderEditorCatList() {
+  const list = document.getElementById('ep-cat-list');
+  if (!list) return;
+  list.innerHTML = state.categories.map((cat, i) => `
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.75rem;background:#1c1c28;border:1px solid ${i===state.activeCat?cat.color:'rgba(255,255,255,0.08)'};cursor:pointer;transition:all 0.18s;" onclick="state.activeCat=${i};render();">
+      <div style="width:8px;height:8px;border-radius:50%;background:${cat.color};flex-shrink:0;"></div>
+      <span style="flex:1;font-size:0.82rem;font-weight:500;color:${i===state.activeCat?'#fff':'#b8b4e0'};">${cat.name}</span>
+      <span style="font-size:0.65rem;color:#7a76a8;">${cat.projects.length} proj</span>
+    </div>
+  `).join('');
+}
+
+function switchEpTab(tabId, btn) {
+  document.querySelectorAll('.ep-tab').forEach(b => {
+    b.style.color = '#7a76a8';
+    b.style.borderBottom = '2px solid transparent';
+  });
+  btn.style.color = '#00f5e4';
+  btn.style.borderBottom = '2px solid #00f5e4';
+  ['categories','page','settings'].forEach(t => {
+    const el = document.getElementById('ep-tab-' + t);
+    if (el) el.style.display = t === tabId ? 'block' : 'none';
+  });
+}
+
+function updatePageTitle(val) {
+  const t = document.querySelector('.ph-title');
+  if (t) t.innerHTML = val + '<br><span style="color:var(--red)">Work</span>';
+}
+
+function exportData() {
+  const data = JSON.stringify(state.categories, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'portfolio-data.json';
+  a.click();
+}
+
+function changePw() {
+  const val = document.getElementById('ep-new-pw').value.trim();
+  const msg = document.getElementById('pw-change-msg');
+  if (!val || val.length < 4) {
+    msg.style.color = '#ff3358';
+    msg.textContent = 'Min 4 characters required.';
+    setTimeout(() => msg.textContent = '', 2500);
+    return;
+  }
+  // Update the runtime password variable
+  window._currentPw = val;
+  // Override checkPw to use new password
+  window.checkPw = function() {
+    const v = document.getElementById('pw-input').value;
+    const err = document.getElementById('pw-err');
+    if (v === window._currentPw) {
+      closePwModal(); enterEdit();
+    } else {
+      err.textContent = 'Wrong password. Try again.';
+      const inp = document.getElementById('pw-input');
+      inp.style.borderColor = '#ff3358'; inp.value = ''; inp.focus();
+      setTimeout(() => { inp.style.borderColor=''; err.textContent=''; }, 2000);
+    }
+  };
+  localStorage.setItem('portfolio_pw', val);
+  msg.style.color = '#39ffb0';
+  msg.textContent = '✓ Password updated for this session. Also update OWNER_PW in the file to make permanent.';
+  document.getElementById('ep-new-pw').value = '';
+  setTimeout(() => msg.textContent = '', 5000);
+}
+
+function setGridCols(cols, btn) {
+  document.querySelectorAll('.proj-grid').forEach(g => {
+    g.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+  });
+  document.querySelectorAll('[onclick*="setGridCols"]').forEach(b => {
+    b.style.borderColor = 'rgba(255,255,255,0.15)';
+    b.style.background = 'transparent';
+    b.style.color = '#b8b4e0';
+  });
+  btn.style.borderColor = 'rgba(0,245,228,0.5)';
+  btn.style.background = 'rgba(0,245,228,0.1)';
+  btn.style.color = '#00f5e4';
+}
+
+// fix pw-modal display toggling
+document.getElementById('pw-modal').style.display = 'none';
+const _origOpenPw = openPwModal;
+window.openPwModal = function() {
+  document.getElementById('pw-modal').style.display = 'flex';
+  setTimeout(() => { const i=document.getElementById('pw-input'); if(i) i.focus(); }, 120);
+};
+window.closePwModal = function() {
+  document.getElementById('pw-modal').style.display = 'none';
+  const i=document.getElementById('pw-input'), e=document.getElementById('pw-err');
+  if(i) i.value=''; if(e) e.textContent='';
+};
+// alias
+function openPwModal() { window.openPwModal(); }
+function closePwModal() { window.closePwModal(); }
+
+// ── INIT ──────────────────────────────────────
+loadData(); render();
+</script>
+</body>
+</html>
