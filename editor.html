@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homepage Editor — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#06060a;--surface:#0f0f16;--panel:#16161f;--card:#1c1c28;--card2:#22223a;
+  --t1:#ffffff;--t2:#c8c4f0;--t3:#b8b4e0;--t4:#7a76a8;
+  --red:#ff3358;--cyan:#00f5e4;--gold:#ffd440;--violet:#b06aff;--orange:#ff7a3d;--green:#39ffb0;
+  --border:rgba(255,255,255,0.10);
+  --sidebar:320px;
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--t1);font-family:'Outfit',sans-serif;font-size:14px;line-height:1.6;display:flex;flex-direction:column;}
+
+/* ── TOP BAR ── */
+.topbar{height:56px;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;flex-shrink:0;z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.06em;color:var(--t1);}
+.topbar-logo span{color:var(--red);}
+.topbar-sep{width:1px;height:24px;background:var(--border);}
+.topbar-title{font-size:0.8rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);}
+.topbar-right{display:flex;align-items:center;gap:0.6rem;}
+.tb-btn{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.45rem 1.1rem;border:1.5px solid;cursor:pointer;background:transparent;transition:all 0.18s;display:flex;align-items:center;gap:0.4rem;}
+.tb-reset{border-color:rgba(255,255,255,0.2);color:var(--t3);}
+.tb-reset:hover{border-color:var(--red);color:var(--red);}
+.tb-save{border-color:var(--gold);color:var(--gold);}
+.tb-save:hover{background:var(--gold);color:#000;}
+.tb-publish{border-color:var(--green);color:var(--green);}
+.tb-publish:hover{background:var(--green);color:#000;}
+.tb-preview{border-color:var(--cyan);color:var(--cyan);}
+.tb-preview:hover{background:var(--cyan);color:#000;}
+.back-link{font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--t4);text-decoration:none;transition:color 0.2s;display:flex;align-items:center;gap:0.4rem;}
+.back-link:hover{color:var(--t1);}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex:1;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-nav{flex-shrink:0;background:var(--panel);border-bottom:1px solid var(--border);padding:0.6rem;}
+.sec-nav-btn{width:100%;text-align:left;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.65rem 0.9rem;border:none;background:transparent;color:var(--t3);cursor:pointer;display:flex;align-items:center;gap:0.65rem;transition:all 0.18s;border-radius:3px;margin-bottom:2px;}
+.sec-nav-btn:hover{background:var(--card);color:var(--t1);}
+.sec-nav-btn.active{background:rgba(255,51,88,0.15);color:var(--red);border-left:2px solid var(--red);}
+.sec-nav-btn .sn-icon{font-size:0.9rem;width:18px;text-align:center;}
+.sec-nav-btn .sn-label{flex:1;}
+.sec-nav-btn .sn-eye{font-size:0.7rem;opacity:0.4;margin-left:auto;cursor:pointer;}
+.sec-nav-btn .sn-eye.hidden-sec{color:var(--red);opacity:1;}
+.sec-drag{cursor:grab;opacity:0.3;font-size:0.75rem;}
+
+.sidebar-content{flex:1;overflow-y:auto;padding:1.2rem;}
+.sidebar-content::-webkit-scrollbar{width:4px;}
+.sidebar-content::-webkit-scrollbar-track{background:transparent;}
+.sidebar-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+
+/* ── FIELD GROUPS ── */
+.field-section{display:none;}
+.field-section.active{display:block;}
+.fs-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.05em;color:var(--t1);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);}
+.field-group{margin-bottom:1.4rem;}
+.fg-label{font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--t4);margin-bottom:0.5rem;display:flex;align-items:center;justify-content:space-between;}
+.fg-reset{font-size:0.6rem;color:var(--t4);cursor:pointer;transition:color 0.15s;}
+.fg-reset:hover{color:var(--red);}
+
+/* inputs */
+.f-text,.f-textarea,.f-select{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--t1);font-family:'Outfit',sans-serif;font-size:0.88rem;padding:0.6rem 0.8rem;outline:none;transition:border-color 0.2s;resize:none;}
+.f-text:focus,.f-textarea:focus,.f-select:focus{border-color:rgba(255,255,255,0.28);}
+.f-text::placeholder,.f-textarea::placeholder{color:var(--t4);}
+.f-textarea{min-height:80px;}
+.f-select{cursor:pointer;}
+.f-select option{background:var(--card);}
+
+/* color picker row */
+.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.color-field{position:relative;}
+.color-field-label{font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--t4);margin-bottom:0.3rem;}
+.color-row{display:flex;align-items:center;gap:0.4rem;}
+.color-swatch{width:28px;height:28px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;flex-shrink:0;position:relative;overflow:hidden;}
+.color-swatch input[type=color]{position:absolute;inset:-4px;opacity:0;cursor:pointer;width:calc(100%+8px);height:calc(100%+8px);}
+.color-hex{flex:1;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--t1);font-family:'Outfit',sans-serif;font-size:0.75rem;padding:0.4rem 0.5rem;outline:none;}
+.color-hex:focus{border-color:rgba(255,255,255,0.28);}
+
+/* range */
+.range-row{display:flex;align-items:center;gap:0.6rem;}
+.f-range{flex:1;-webkit-appearance:none;height:3px;background:rgba(255,255,255,0.12);outline:none;cursor:pointer;}
+.f-range::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--cyan);cursor:pointer;}
+.range-val{font-size:0.75rem;color:var(--t2);min-width:36px;text-align:right;font-weight:600;}
+
+/* toggle */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;}
+.toggle-label{font-size:0.82rem;color:var(--t2);}
+.toggle{position:relative;width:38px;height:22px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:22px;cursor:pointer;transition:background 0.2s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:transform 0.2s;}
+.toggle input:checked + .toggle-slider{background:var(--cyan);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(16px);}
+
+/* tab within section */
+.sub-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.2rem;}
+.sub-tab{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 0.9rem;border:none;background:transparent;color:var(--t4);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.18s;}
+.sub-tab:hover{color:var(--t1);}
+.sub-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.sub-panel{display:none;}
+.sub-panel.active{display:block;}
+
+/* image upload */
+.img-upload-area{border:1.5px dashed rgba(255,255,255,0.15);padding:1.2rem;text-align:center;cursor:pointer;position:relative;transition:border-color 0.2s;}
+.img-upload-area:hover{border-color:var(--cyan);}
+.img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-upload-preview{width:100%;height:80px;object-fit:cover;margin-bottom:0.5rem;display:none;}
+.img-upload-preview.show{display:block;}
+.img-upload-text{font-size:0.72rem;color:var(--t4);}
+
+/* items list (testimonials, services) */
+.items-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.75rem;}
+.item-card{background:var(--card);border:1px solid var(--border);padding:0.75rem;}
+.item-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.item-card-num{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--t4);}
+.item-card-del{font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.5rem;border:1px solid rgba(255,51,88,0.3);color:var(--red);background:transparent;cursor:pointer;transition:all 0.15s;}
+.item-card-del:hover{background:var(--red);color:#fff;}
+.add-item-btn{width:100%;padding:0.6rem;border:1.5px dashed rgba(255,255,255,0.15);background:transparent;color:var(--t3);font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.18s;}
+.add-item-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* toggle-style option buttons (logo type, fit mode, etc) */
+.modal-type-opt{padding:0.6rem 0.5rem;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:var(--t2);font-size:0.78rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;text-align:center;transition:all 0.18s;}
+.modal-type-opt:hover{border-color:var(--cyan);color:var(--cyan);}
+.modal-type-opt.selected{border-color:var(--cyan);background:rgba(0,245,228,0.1);color:var(--cyan);}
+
+.fit-opt{padding:0.4rem;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:var(--t3);font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;text-align:center;transition:all 0.18s;}
+.fit-opt:hover{border-color:var(--cyan);color:var(--cyan);}
+.fit-opt.active{border-color:var(--cyan);background:rgba(0,245,228,0.1);color:var(--cyan);}
+
+.iac-btn{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.45rem 0.8rem;border:1.5px solid rgba(255,255,255,0.15);color:var(--t2);background:transparent;cursor:pointer;transition:all 0.18s;}
+.iac-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* spacing control */
+.spacing-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+
+/* ── PREVIEW PANE ── */
+.preview-pane{flex:1;background:#111;display:flex;flex-direction:column;overflow:hidden;}
+.preview-topbar{height:40px;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0;}
+.preview-url{font-size:0.75rem;color:var(--t4);display:flex;align-items:center;gap:0.5rem;}
+.preview-url span{background:rgba(255,255,255,0.05);border:1px solid var(--border);padding:0.2rem 0.75rem;color:var(--t2);font-size:0.72rem;}
+.preview-device-btns{display:flex;gap:0.3rem;}
+.dev-btn{width:28px;height:28px;background:transparent;border:1px solid var(--border);color:var(--t4);cursor:pointer;font-size:0.75rem;transition:all 0.18s;display:flex;align-items:center;justify-content:center;}
+.dev-btn:hover,.dev-btn.active{border-color:var(--cyan);color:var(--cyan);}
+.preview-wrapper{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem;background:#0a0a0f;}
+.preview-frame{background:var(--bg);transition:width 0.3s;transform-origin:top center;}
+.preview-frame.desktop{width:100%;max-width:1280px;}
+.preview-frame.tablet{width:768px;}
+.preview-frame.mobile{width:390px;}
+
+/* ── PREVIEW SECTIONS ── */
+#prev-nav{background:rgba(6,6,10,0.92);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+#prev-nav .pn-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em;}
+#prev-nav .pn-links{display:flex;gap:2rem;}
+#prev-nav .pn-link{font-size:0.78rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.6;}
+#prev-nav .pn-btn{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.3rem;border-width:1.5px;border-style:solid;}
+
+.prev-section{padding:5rem 4rem;position:relative;transition:all 0.3s;}
+.prev-section:hover{outline:1.5px dashed rgba(0,245,228,0.25);}
+.prev-eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:0.75rem;}
+.prev-heading{font-family:'Bebas Neue',sans-serif;line-height:0.92;letter-spacing:0.02em;}
+.prev-subtext{line-height:1.88;font-weight:400;margin-top:1.25rem;max-width:580px;}
+.prev-btn{display:inline-block;font-size:0.85rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.9rem 2.2rem;margin-top:1.5rem;cursor:default;border-width:1.5px;border-style:solid;}
+
+/* hero */
+#prev-hero{min-height:70vh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:4rem;position:relative;overflow:hidden;}
+#prev-hero .hero-bg{position:absolute;inset:0;z-index:0;}
+#prev-hero .hero-content{position:relative;z-index:1;}
+#prev-hero h1{font-family:'Bebas Neue',sans-serif;line-height:0.88;letter-spacing:0.01em;}
+
+/* services grid */
+.prev-services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.08);margin-top:2rem;}
+
+/* portfolio preview */
+.prev-portfolio-grid{display:flex;gap:1rem;align-items:stretch;margin-top:2rem;}
+.prev-portfolio-grid > .prev-port-item:first-child{flex:1.4;min-width:0;}
+.prev-port-col-right{display:flex;flex-direction:column;gap:1rem;flex:1;min-width:0;}
+.prev-port-col-right .prev-port-item{flex:none;}
+.prev-port-item{position:relative;overflow:hidden;border-radius:0;display:flex;align-items:flex-end;padding:1rem;background-size:cover;background-position:center;}
+.prev-port-overlay{position:relative;z-index:1;}
+.prev-port-cat{font-size:0.65rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.3rem;}
+.prev-port-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.03em;color:#fff;}
+.prev-port-badge{position:absolute;top:0.6rem;left:0.6rem;font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.25rem 0.6rem;z-index:2;}
+.prev-port-shade{position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 60%, transparent 100%);pointer-events:none;}
+.prev-svc{padding:2rem;background:var(--bg);transition:background 0.2s;}
+.prev-svc-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;opacity:0.2;line-height:1;margin-bottom:1rem;}
+.prev-svc-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.04em;margin-bottom:0.5rem;}
+.prev-svc-desc{font-size:0.88rem;opacity:0.7;line-height:1.75;}
+
+/* testimonials */
+.prev-testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.5rem;}
+.prev-testi{padding:1.8rem;border:1px solid rgba(255,255,255,0.08);}
+.prev-testi-stars{font-size:0.8rem;letter-spacing:0.1em;margin-bottom:1rem;}
+.prev-testi-text{font-size:0.88rem;line-height:1.8;font-style:italic;opacity:0.8;margin-bottom:1.2rem;}
+.prev-testi-name{font-size:0.88rem;font-weight:600;}
+.prev-testi-role{font-size:0.72rem;opacity:0.5;}
+
+/* about */
+.prev-about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:2rem;}
+.prev-skill{margin-bottom:1.2rem;}
+.prev-skill-top{display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.88rem;}
+.prev-skill-bar{height:3px;background:rgba(255,255,255,0.1);}
+.prev-skill-fill{height:3px;width:90%;}
+
+/* contact */
+.prev-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;margin-top:2rem;}
+.prev-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:0.9rem;margin-bottom:0.75rem;font-size:0.88rem;color:rgba(255,255,255,0.5);}
+.prev-submit{padding:0.9rem 2rem;font-size:0.85rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:default;border-width:1.5px;border-style:solid;}
+
+/* footer */
+#prev-footer{padding:2rem 4rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.08);}
+
+/* section hover edit hint */
+.prev-section:hover::before{content:'Click sidebar to edit';position:absolute;top:0.5rem;right:0.75rem;font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--cyan);opacity:0.6;}
+
+/* status toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--panel);border:1px solid var(--border);padding:0.9rem 1.5rem;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;color:var(--t2);z-index:999;transform:translateY(4rem);opacity:0;transition:all 0.3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:var(--green);color:var(--green);}
+.toast.warning{border-color:var(--gold);color:var(--gold);}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px;}
+</style>
+</head>
+<body>
+<script src="db.js"></script>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-link">← Back to Site</a>
+    <div class="topbar-sep"></div>
+    <div class="topbar-logo">Studio<span>.</span>Name</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-title">Homepage Editor</div>
+  </div>
+  <div class="topbar-right">
+    <button class="tb-btn tb-reset" onclick="resetSection()">↺ Reset Section</button>
+    <button class="tb-btn" style="border-color:rgba(176,106,255,0.5);color:var(--violet);" onclick="exportHomepageData()" title="Download a backup file you can re-import on another browser/device">⬇ Export</button>
+    <label class="tb-btn" style="border-color:rgba(176,106,255,0.5);color:var(--violet);cursor:pointer;" title="Restore from an exported file">
+      ⬆ Import
+      <input type="file" accept=".json" style="display:none;" onchange="importHomepageData(this)">
+    </label>
+    <button class="tb-btn tb-save" onclick="saveAll()">💾 Save</button>
+    <button class="tb-btn tb-publish" onclick="publishAll()">🚀 Publish</button>
+    <button class="tb-btn tb-preview" onclick="openPreviewTab()">↗ Open Preview</button>
+  </div>
+</div>
+
+<div id="sync-banner" style="display:none;background:rgba(176,106,255,0.08);border-bottom:1px solid rgba(176,106,255,0.3);padding:0.6rem 1.5rem;font-size:0.78rem;color:var(--violet);text-align:center;">
+  If your changes don't show up on index.html after Publish, click <strong>⬇ Export</strong> here, then open index.html and use its Import option (or just try a hard refresh: Ctrl+Shift+R / Cmd+Shift+R).
+</div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <!-- Section Nav -->
+    <div class="sidebar-nav" id="section-nav">
+      <!-- injected by JS -->
+    </div>
+    <!-- Field Editor -->
+    <div class="sidebar-content" id="sidebar-content">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-pane">
+    <div class="preview-topbar">
+      <div class="preview-url">
+        <span>🔴</span><span>🟡</span><span>🟢</span>
+        <span>index.html — Live Preview</span>
+      </div>
+      <div class="preview-device-btns">
+        <button class="dev-btn active" onclick="setDevice('desktop',this)" title="Desktop">🖥</button>
+        <button class="dev-btn" onclick="setDevice('tablet',this)" title="Tablet">📱</button>
+        <button class="dev-btn" onclick="setDevice('mobile',this)" title="Mobile">📲</button>
+      </div>
+    </div>
+    <div class="preview-wrapper" id="preview-wrapper">
+      <div class="preview-frame desktop" id="preview-frame">
+
+        <!-- NAV PREVIEW -->
+        <div id="prev-nav" onclick="activateSection('nav')" style="cursor:pointer;" title="Click to edit logo & nav">
+          <div class="pn-logo" id="pv-logo-text">Studio<span style="color:#ff3358">.</span>Name</div>
+          <div class="pn-links">
+            <span class="pn-link">About</span>
+            <span class="pn-link">Services</span>
+            <span class="pn-link">Work</span>
+            <span class="pn-link">Contact</span>
+          </div>
+          <div class="pn-btn" id="pv-nav-btn">Hire Me</div>
+        </div>
+
+        <!-- HERO PREVIEW -->
+        <div class="prev-section" id="prev-hero" onclick="activateSection('hero')">
+          <div class="hero-bg" id="pv-hero-bg"></div>
+          <div class="hero-content">
+            <div class="prev-eyebrow" id="pv-hero-eyebrow">Available for projects</div>
+            <h1 id="pv-hero-h1" style="font-size:clamp(5rem,12vw,10rem);">
+              <span id="pv-h1-line1" style="display:block;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,0.3);">Creative</span>
+              <span id="pv-h1-line2" style="display:block;color:#ff3358">Design</span>
+              <span id="pv-h1-line3" style="display:block;color:#ffffff">& Video</span>
+            </h1>
+            <div class="prev-subtext" id="pv-hero-sub">Bold visuals. Cinematic edits. Work that stops the scroll and builds brands people remember.</div>
+            <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+              <div class="prev-btn" id="pv-hero-btn1">View Full Portfolio</div>
+              <div class="prev-btn" id="pv-hero-btn2" style="background:transparent;">Let's Talk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABOUT PREVIEW -->
+        <div class="prev-section" id="prev-about" onclick="activateSection('about')">
+          <div class="prev-eyebrow" id="pv-about-eyebrow">About Me</div>
+          <div class="prev-about-grid">
+            <div>
+              <div class="prev-heading" id="pv-about-heading" style="font-size:clamp(2.5rem,5vw,4rem);">Pixels.<br>Frames.<br><span id="pv-about-accent">Impact.</span></div>
+              <div class="prev-subtext" id="pv-about-text">I'm a creative professional who lives at the intersection of graphic design and video storytelling.</div>
+            </div>
+            <div id="pv-skills-col">
+              <div class="prev-skill"><div class="prev-skill-top"><span>Graphic Design</span><span>95</span></div><div class="prev-skill-bar"><div class="prev-skill-fill" id="pv-skill-fill" style="width:95%;background:#ff3358;"></div></div></div>
+              <div class="prev-skill"><div class="prev-skill-top"><span>Video Editing</span><span>90</span></div><div class="prev-skill-bar"><div class="prev-skill-fill" style="width:90%;background:#00f5e4;"></div></div></div>
+              <div class="prev-skill"><div class="prev-skill-top"><span>Motion Graphics</span><span>83</span></div><div class="prev-skill-bar"><div class="prev-skill-fill" style="width:83%;background:#ff7a3d;"></div></div></div>
+              <div class="prev-skill"><div class="prev-skill-top"><span>Color Grading</span><span>88</span></div><div class="prev-skill-bar"><div class="prev-skill-fill" style="width:88%;background:#b06aff;"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SERVICES PREVIEW -->
+        <div class="prev-section" id="prev-services" onclick="activateSection('services')">
+          <div class="prev-eyebrow" id="pv-svc-eyebrow">What I Do</div>
+          <div class="prev-heading" id="pv-svc-heading" style="font-size:clamp(2.5rem,5vw,4rem);">Services</div>
+          <div class="prev-services-grid" id="pv-svc-grid"></div>
+        </div>
+
+        <!-- PORTFOLIO PREVIEW -->
+        <div class="prev-section" id="prev-portfolio" onclick="activateSection('portfolio')">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div>
+              <div class="prev-eyebrow" id="pv-port-eyebrow">Selected Work</div>
+              <div class="prev-heading" id="pv-port-heading" style="font-size:clamp(2.5rem,5vw,4rem);">Recent <span id="pv-port-accent">Projects</span></div>
+            </div>
+          </div>
+          <div class="prev-portfolio-grid" id="pv-port-grid"></div>
+          <div style="text-align:center;margin-top:2rem;">
+            <div class="prev-btn" id="pv-port-cta" style="margin-top:0;">See All Projects →</div>
+          </div>
+        </div>
+
+        <!-- TESTIMONIALS PREVIEW -->
+        <div class="prev-section" id="prev-testi" onclick="activateSection('testimonials')">
+          <div class="prev-eyebrow" id="pv-testi-eyebrow">Client Words</div>
+          <div class="prev-heading" id="pv-testi-heading" style="font-size:clamp(2.5rem,5vw,4rem);">What They <span id="pv-testi-accent">Say</span></div>
+          <div class="prev-testi-grid" id="pv-testi-grid"></div>
+        </div>
+
+        <!-- CONTACT PREVIEW -->
+        <div class="prev-section" id="prev-contact" onclick="activateSection('contact')">
+          <div class="prev-eyebrow" id="pv-contact-eyebrow">Get In Touch</div>
+          <div class="prev-contact-grid">
+            <div>
+              <div class="prev-heading" id="pv-contact-heading" style="font-size:clamp(2.2rem,4vw,3.5rem);">Let's Build<br>Something<br><span id="pv-contact-accent">Together</span></div>
+              <div class="prev-subtext" id="pv-contact-sub">Got a project in mind? Tell me about it.</div>
+            </div>
+            <div>
+              <input class="prev-input" placeholder="Your Name" readonly>
+              <input class="prev-input" placeholder="Email Address" readonly>
+              <textarea class="prev-input" style="height:100px;resize:none;" placeholder="Your message..." readonly></textarea>
+              <div class="prev-submit" id="pv-contact-btn">Send Message →</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER PREVIEW -->
+        <div id="prev-footer" onclick="activateSection('footer')">
+          <div class="pn-logo" id="pv-footer-logo">Studio<span style="color:#ff3358">.</span>Name</div>
+          <div id="pv-footer-copy" style="font-size:0.82rem;color:rgba(255,255,255,0.4);">© 2025 — Crafted with purpose</div>
+          <div class="pn-links" style="gap:1.5rem;">
+            <span class="pn-link" style="font-size:0.75rem;">About</span>
+            <span class="pn-link" style="font-size:0.75rem;">Work</span>
+            <span class="pn-link" style="font-size:0.75rem;">Contact</span>
+          </div>
+        </div>
+
+      </div><!-- /preview-frame -->
+    </div><!-- /preview-wrapper -->
+  </div><!-- /preview-pane -->
+
+</div><!-- /app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const DEFAULTS = {
+  nav:{ logoType:'text', logoText:'Studio.Name', logoAccent:'#ff3358', logoImage:'', logoHeight:36, btnText:'Hire Me', btnColor:'#ff3358', btnTextColor:'#ffffff', links:['About','Services','Work','Contact'] },
+  hero:{
+    eyebrow:'Available for projects',
+    line1:'Creative', line2:'Design', line3:'& Video',
+    sub:'Bold visuals. Cinematic edits. Work that stops the scroll and builds brands people remember.',
+    btn1Text:'View Full Portfolio', btn1Bg:'#ff3358', btn1Color:'#ffffff',
+    btn2Text:"Let's Talk", btn2Bg:'transparent', btn2Color:'#ffffff',
+    bgColor:'#06060a', textColor:'#ffffff', accentColor:'#ff3358',
+    eyebrowColor:'#00f5e4', subColor:'#c8c4f0',
+    bgImage:'', overlayOpacity:0.5,
+    headingSize:120, subSize:18, headingWeight:700,
+    paddingTop:80, paddingBottom:80, visible:true
+  },
+  about:{
+    eyebrow:'About Me', heading:'Pixels.\nFrames.\nImpact.',
+    text:"I'm a creative professional who lives at the intersection of graphic design and video storytelling.",
+    accentWord:'Impact.',
+    bgColor:'#0f0f16', textColor:'#c8c4f0', headingColor:'#ffffff', accentColor:'#ff3358',
+    eyebrowColor:'#00f5e4',
+    headingSize:64, textSize:17, paddingTop:80, paddingBottom:80, visible:true
+  },
+  services:{
+    eyebrow:'What I Do', heading:'Services',
+    bgColor:'#06060a', textColor:'#c8c4f0', headingColor:'#ffffff', accentColor:'#ff3358',
+    eyebrowColor:'#00f5e4',
+    headingSize:64, paddingTop:80, paddingBottom:80, visible:true,
+    items:[
+      {num:'01', title:'Graphic Design', desc:'Visual identities that make brands unforgettable.', color:'#ff3358'},
+      {num:'02', title:'Video Editing', desc:'Footage transformed into stories with cinematic feel.', color:'#00f5e4'},
+      {num:'03', title:'Motion Graphics', desc:'Animation that adds energy to any visual project.', color:'#ff7a3d'},
+      {num:'04', title:'Social Media', desc:'Platform-native content designed to stop thumbs.', color:'#b06aff'}
+    ]
+  },
+  portfolio:{
+    eyebrow:'Selected Work', heading:'Recent', accentWord:'Projects',
+    ctaText:'See All 18 Projects →',
+    bgColor:'#0f0f16', textColor:'#c8c4f0', headingColor:'#ffffff', accentColor:'#ff3358',
+    eyebrowColor:'#00f5e4', cardBg:'#1c1c28', btnBg:'#ff3358', btnColor:'#ffffff',
+    headingSize:64, paddingTop:80, paddingBottom:80, visible:true, featuredWidth:58,
+    items:[
+      {title:'Fashion Brand Commercial', cat:'Video Editing', badge:'Video', color:'#ff3358', image:'', video:'', videoEmbed:'', imgFit:'cover', imgZoom:100, imgPosX:50, imgPosY:50, frameHeight:480},
+      {title:'Tech Startup Brand Identity', cat:'Graphic Design', badge:'Design', color:'#00f5e4', image:'', video:'', videoEmbed:'', imgFit:'cover', imgZoom:100, imgPosX:50, imgPosY:50, frameHeight:240},
+      {title:'Event Promo Animation', cat:'Motion Graphics', badge:'Motion', color:'#ff7a3d', image:'', video:'', videoEmbed:'', imgFit:'cover', imgZoom:100, imgPosX:50, imgPosY:50, frameHeight:240}
+    ]
+  },
+  testimonials:{
+    eyebrow:'Client Words', heading:'What They', accentWord:'Say',
+    bgColor:'#06060a', textColor:'#c8c4f0', headingColor:'#ffffff', accentColor:'#ffd440',
+    eyebrowColor:'#00f5e4', cardBg:'#16161f', starColor:'#ffd440',
+    headingSize:64, paddingTop:80, paddingBottom:80, visible:true,
+    items:[
+      {text:'"Absolutely blew us away. The brand identity felt like they knew our company better than we did."', name:'Arun Raj', role:'Founder, TechLaunch', stars:'★★★★★'},
+      {text:'"The reel for our product launch hit 200k views in 3 days. Exactly the cinematic feel we wanted."', name:'Sneha Priya', role:'Marketing Head, StyleCo', stars:'★★★★★'},
+      {text:'"Worked together on 4 projects. Always on time, always exceeds expectations. My go-to creative."', name:'Mihail Kovacs', role:'Content Creator, 500k+ subs', stars:'★★★★★'}
+    ]
+  },
+  contact:{
+    eyebrow:'Get In Touch', heading:'Let\'s Build\nSomething\nTogether', accentWord:'Together',
+    sub:'Got a project in mind? Tell me about it — I\'d love to hear what you\'re working on.',
+    btnText:'Send Message →', btnBg:'#ff3358', btnColor:'#ffffff',
+    bgColor:'#0f0f16', textColor:'#c8c4f0', headingColor:'#ffffff', accentColor:'#ff3358',
+    eyebrowColor:'#00f5e4', inputBg:'#1c1c28', inputBorder:'rgba(255,255,255,0.12)',
+    headingSize:56, paddingTop:80, paddingBottom:80, visible:true
+  },
+  footer:{
+    logoText:'Studio.Name', logoAccent:'#ff3358',
+    copy:'© 2025 — Crafted with purpose',
+    bgColor:'#06060a', textColor:'#c8c4f0', borderColor:'rgba(255,255,255,0.08)',
+    paddingTop:40, paddingBottom:40, visible:true
+  }
+};
+
+let D = JSON.parse(JSON.stringify(DEFAULTS)); // working copy
+let activeSection = 'hero';
+let activeSub = {};
+// (data is loaded asynchronously from IndexedDB in init() at the bottom of this script)
+
+// ═══════════════════════════════════════════════════
+// SECTIONS CONFIG
+// ═══════════════════════════════════════════════════
+const SECTIONS = [
+  {id:'nav',        label:'Navigation',   icon:'🧭'},
+  {id:'hero',       label:'Hero',         icon:'🌟'},
+  {id:'about',      label:'About',        icon:'👤'},
+  {id:'services',   label:'Services',     icon:'⚙️'},
+  {id:'portfolio',  label:'Portfolio',    icon:'🖼️'},
+  {id:'testimonials',label:'Testimonials',icon:'💬'},
+  {id:'contact',    label:'Contact',      icon:'✉️'},
+  {id:'footer',     label:'Footer',       icon:'🔻'},
+];
+
+// ═══════════════════════════════════════════════════
+// SECTION NAV RENDER
+// ═══════════════════════════════════════════════════
+function renderNav() {
+  const nav = document.getElementById('section-nav');
+  nav.innerHTML = SECTIONS.map(s => {
+    const vis = D[s.id] && D[s.id].visible === false;
+    return `<button class="sec-nav-btn ${s.id===activeSection?'active':''}" onclick="activateSection('${s.id}')">
+      <span class="sn-icon">${s.icon}</span>
+      <span class="sn-label">${s.label}</span>
+      ${s.id!=='nav'&&s.id!=='footer'?`<span class="sn-eye ${vis?'hidden-sec':''}" onclick="toggleVisible('${s.id}',event)" title="${vis?'Show':'Hide'} section">${vis?'👁‍🗨':'👁'}</span>`:''}
+    </button>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// SECTION EDITOR RENDER
+// ═══════════════════════════════════════════════════
+function activateSection(id) {
+  activeSection = id;
+  renderNav();
+  renderEditor();
+}
+
+function renderEditor() {
+  const sc = document.getElementById('sidebar-content');
+  const s = activeSection;
+  const render = {
+    nav: renderNavEditor, hero: renderHeroEditor, about: renderAboutEditor,
+    services: renderServicesEditor, portfolio: renderPortfolioEditor, testimonials: renderTestiEditor,
+    contact: renderContactEditor, footer: renderFooterEditor
+  };
+  if (render[s]) sc.innerHTML = render[s]();
+  else sc.innerHTML = '<div style="color:var(--t4);padding:2rem;text-align:center;">Select a section</div>';
+  applyPreview();
+}
+
+// ── HELPERS ──────────────────────────────────────
+function colorField(label, key, sectionKey) {
+  const val = D[sectionKey][key] || '#ffffff';
+  return `<div class="color-field">
+    <div class="color-field-label">${label}</div>
+    <div class="color-row">
+      <div class="color-swatch" style="background:${val}">
+        <input type="color" value="${val}" oninput="setColor('${sectionKey}','${key}',this.value)">
+      </div>
+      <input class="color-hex" value="${val}" maxlength="9" oninput="setColor('${sectionKey}','${key}',this.value);this.previousElementSibling.style.background=this.value">
+    </div>
+  </div>`;
+}
+function textField(label, key, sectionKey, ph='') {
+  return `<div class="field-group">
+    <div class="fg-label">${label}</div>
+    <input class="f-text" value="${esc(D[sectionKey][key]||'')}" placeholder="${ph}" oninput="setVal('${sectionKey}','${key}',this.value)">
+  </div>`;
+}
+function textareaField(label, key, sectionKey, ph='') {
+  return `<div class="field-group">
+    <div class="fg-label">${label}</div>
+    <textarea class="f-textarea" placeholder="${ph}" oninput="setVal('${sectionKey}','${key}',this.value)">${esc(D[sectionKey][key]||'')}</textarea>
+  </div>`;
+}
+function rangeField(label, key, sectionKey, min, max, unit='px') {
+  const val = D[sectionKey][key] || min;
+  return `<div class="field-group">
+    <div class="fg-label">${label} <span style="color:var(--t2)">${val}${unit}</span></div>
+    <div class="range-row">
+      <input class="f-range" type="range" min="${min}" max="${max}" value="${val}" oninput="setVal('${sectionKey}','${key}',+this.value);this.parentElement.previousElementSibling.querySelector('span').textContent=this.value+'${unit}'">
+    </div>
+  </div>`;
+}
+function itemRangeField(label, key, sectionKey, idx, min, max, defVal, unit='') {
+  const item = D[sectionKey].items[idx];
+  const val = item[key]!==undefined ? item[key] : defVal;
+  return `<div style="margin-bottom:0.5rem;">
+    <div style="display:flex;justify-content:space-between;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t4);margin-bottom:0.3rem;">
+      <span>${label}</span><span style="color:var(--t2)">${val}${unit}</span>
+    </div>
+    <input class="f-range" style="width:100%;" type="range" min="${min}" max="${max}" value="${val}"
+      oninput="setItemVal('${sectionKey}',${idx},'${key}',+this.value);this.previousElementSibling.querySelector('span:last-child').textContent=this.value+'${unit}';applyPreview()">
+  </div>`;
+}
+function spacingFields(sectionKey) {
+  return `<div class="field-group">
+    <div class="fg-label">Padding</div>
+    <div class="spacing-grid">
+      <div><div style="font-size:0.6rem;color:var(--t4);margin-bottom:0.3rem;">TOP</div>
+        <input class="f-text" type="number" value="${D[sectionKey].paddingTop||80}" oninput="setVal('${sectionKey}','paddingTop',+this.value)"></div>
+      <div><div style="font-size:0.6rem;color:var(--t4);margin-bottom:0.3rem;">BOTTOM</div>
+        <input class="f-text" type="number" value="${D[sectionKey].paddingBottom||80}" oninput="setVal('${sectionKey}','paddingBottom',+this.value)"></div>
+    </div>
+  </div>`;
+}
+function subTabs(id, tabs) {
+  const active = activeSub[id] || tabs[0].id;
+  return `<div class="sub-tabs">${tabs.map(t=>`<button class="sub-tab ${t.id===active?'active':''}" onclick="setSub('${id}','${t.id}')">${t.label}</button>`).join('')}</div>
+  ${tabs.map(t=>`<div class="sub-panel ${t.id===active?'active':''}" id="sub-${id}-${t.id}">${t.content}</div>`).join('')}`;
+}
+function setSub(id, tabId) { activeSub[id]=tabId; renderEditor(); }
+function esc(s) { return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ═══════════════════════════════════════════════════
+// SECTION EDITORS
+// ═══════════════════════════════════════════════════
+function renderNavEditor() {
+  const isImage = D.nav.logoType === 'image';
+  return `<div class="field-section active">
+    <div class="fs-title">Navigation</div>
+
+    <div class="field-group">
+      <div class="fg-label">Logo Type</div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="modal-type-opt ${!isImage?'selected':''}" style="flex:1;" onclick="setNavLogoType('text')">📝 Text Logo</button>
+        <button class="modal-type-opt ${isImage?'selected':''}" style="flex:1;" onclick="setNavLogoType('image')">🖼 Image Logo</button>
+      </div>
+    </div>
+
+    ${!isImage ? `
+      ${textField('Logo Text','logoText','nav','Studio.Name')}
+      <div class="field-group"><div class="fg-label">Colors</div><div class="color-grid">
+        ${colorField('Logo Accent','logoAccent','nav')}
+        ${colorField('Button Color','btnColor','nav')}
+        ${colorField('Button Text','btnTextColor','nav')}
+      </div></div>
+    ` : `
+      <div class="field-group">
+        <div class="fg-label">Logo Image</div>
+        <div class="img-upload-area">
+          <input type="file" accept="image/*" onchange="uploadNavLogo(this)">
+          <img class="img-upload-preview ${D.nav.logoImage?'show':''}" id="nav-logo-prev" src="${D.nav.logoImage||''}" style="object-fit:contain;background:#06060a;">
+          <div class="img-upload-text">${D.nav.logoImage ? 'Click to replace logo image' : 'Click to upload your logo'}</div>
+        </div>
+      </div>
+      ${rangeField('Logo Height (fits nav bar)','logoHeight','nav',16,72)}
+      <div class="field-group"><div class="fg-label">Colors</div><div class="color-grid">
+        ${colorField('Button Color','btnColor','nav')}
+        ${colorField('Button Text','btnTextColor','nav')}
+      </div></div>
+    `}
+
+    ${textField('Button Text','btnText','nav','Hire Me')}
+  </div>`;
+}
+
+function setNavLogoType(type) {
+  D.nav.logoType = type;
+  renderEditor();
+}
+
+function uploadNavLogo(input) {
+  if (!input.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    D.nav.logoImage = e.target.result;
+    renderEditor();
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function renderHeroEditor() {
+  const tabs = [
+    {id:'text', label:'Text', content:`
+      ${textField('Eyebrow Text','eyebrow','hero','Available for projects')}
+      ${textField('Line 1 (stroke)','line1','hero','Creative')}
+      ${textField('Line 2 (accent)','line2','hero','Design')}
+      ${textField('Line 3','line3','hero','& Video')}
+      ${textareaField('Subtitle','sub','hero','Your tagline...')}
+      <div class="field-group"><div class="fg-label">Button 1</div>
+        <input class="f-text" value="${esc(D.hero.btn1Text)}" placeholder="Button text" oninput="setVal('hero','btn1Text',this.value)" style="margin-bottom:0.4rem;">
+      </div>
+      <div class="field-group"><div class="fg-label">Button 2</div>
+        <input class="f-text" value="${esc(D.hero.btn2Text)}" placeholder="Button text" oninput="setVal('hero','btn2Text',this.value)">
+      </div>
+    `},
+    {id:'colors', label:'Colors', content:`
+      <div class="color-grid">
+        ${colorField('Background','bgColor','hero')}
+        ${colorField('Heading','textColor','hero')}
+        ${colorField('Accent (Line 2)','accentColor','hero')}
+        ${colorField('Eyebrow','eyebrowColor','hero')}
+        ${colorField('Subtitle','subColor','hero')}
+        ${colorField('Btn 1 BG','btn1Bg','hero')}
+        ${colorField('Btn 1 Text','btn1Color','hero')}
+        ${colorField('Btn 2 Text','btn2Color','hero')}
+      </div>
+    `},
+    {id:'typo', label:'Typography', content:`
+      ${rangeField('Heading Size','headingSize','hero',40,180)}
+      ${rangeField('Subtitle Size','subSize','hero',12,32)}
+    `},
+    {id:'bg', label:'Background', content:`
+      <div class="field-group"><div class="fg-label">Background Image</div>
+        <div class="img-upload-area">
+          <input type="file" accept="image/*" onchange="uploadBgImage('hero',this)">
+          <img class="img-upload-preview ${D.hero.bgImage?'show':''}" id="hero-bg-prev" src="${D.hero.bgImage||''}">
+          <div class="img-upload-text">Click to upload background image</div>
+        </div>
+      </div>
+      ${rangeField('Overlay Opacity','overlayOpacity','hero',0,1,'%')}
+      ${spacingFields('hero')}
+    `}
+  ];
+  return `<div class="field-section active"><div class="fs-title">Hero Section</div>${subTabs('hero',tabs)}</div>`;
+}
+
+function renderAboutEditor() {
+  const tabs = [
+    {id:'text', label:'Text', content:`
+      ${textField('Eyebrow','eyebrow','about','About Me')}
+      ${textareaField('Heading (use \\n for new lines)','heading','about')}
+      ${textField('Accent Word','accentWord','about','Impact.')}
+      ${textareaField('Body Text','text','about')}
+    `},
+    {id:'colors', label:'Colors', content:`
+      <div class="color-grid">
+        ${colorField('Background','bgColor','about')}
+        ${colorField('Heading','headingColor','about')}
+        ${colorField('Body Text','textColor','about')}
+        ${colorField('Accent Color','accentColor','about')}
+        ${colorField('Eyebrow','eyebrowColor','about')}
+      </div>
+    `},
+    {id:'typo', label:'Typography', content:`
+      ${rangeField('Heading Size','headingSize','about',32,120)}
+      ${rangeField('Body Size','textSize','about',12,28)}
+      ${spacingFields('about')}
+    `}
+  ];
+  return `<div class="field-section active"><div class="fs-title">About Section</div>${subTabs('about',tabs)}</div>`;
+}
+
+function renderServicesEditor() {
+  const tabs = [
+    {id:'text', label:'Text', content:`
+      ${textField('Eyebrow','eyebrow','services')}
+      ${textField('Heading','heading','services')}
+    `},
+    {id:'items', label:'Items', content:`
+      <div class="items-list" id="svc-items-list">
+        ${D.services.items.map((item,i) => `
+          <div class="item-card">
+            <div class="item-card-top"><span class="item-card-num">Service ${i+1}</span>
+              <button class="item-card-del" onclick="delItem('services',${i})">✕</button>
+            </div>
+            <input class="f-text" value="${esc(item.title)}" placeholder="Title" oninput="setItemVal('services',${i},'title',this.value)" style="margin-bottom:0.4rem;">
+            <textarea class="f-textarea" style="min-height:55px;" oninput="setItemVal('services',${i},'desc',this.value)">${esc(item.desc)}</textarea>
+          </div>
+        `).join('')}
+      </div>
+      <button class="add-item-btn" onclick="addItem('services',{num:'0'+(D.services.items.length+1),title:'New Service',desc:'Description here.',color:'#00f5e4'})">＋ Add Service</button>
+    `},
+    {id:'colors', label:'Colors', content:`
+      <div class="color-grid">
+        ${colorField('Background','bgColor','services')}
+        ${colorField('Heading','headingColor','services')}
+        ${colorField('Text','textColor','services')}
+        ${colorField('Eyebrow','eyebrowColor','services')}
+      </div>
+      ${spacingFields('services')}
+    `}
+  ];
+  return `<div class="field-section active"><div class="fs-title">Services Section</div>${subTabs('services',tabs)}</div>`;
+}
+
+function renderPortfolioEditor() {
+  const tabs = [
+    {id:'text', label:'Text', content:`
+      ${textField('Eyebrow','eyebrow','portfolio','Selected Work')}
+      ${textField('Heading','heading','portfolio','Recent')}
+      ${textField('Accent Word (2nd line)','accentWord','portfolio','Projects')}
+      ${textField('Button Text','ctaText','portfolio','See All Projects →')}
+    `},
+    {id:'items', label:'Projects', content:`
+      <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem;margin-bottom:1rem;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">↔ Layout Width</div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t4);margin-bottom:0.3rem;">
+          <span>Featured Card Width</span><span style="color:var(--t2)" id="fw-val">${D.portfolio.featuredWidth||58}%</span>
+        </div>
+        <input class="f-range" style="width:100%;" type="range" min="30" max="75" value="${D.portfolio.featuredWidth||58}"
+          oninput="setVal('portfolio','featuredWidth',+this.value);document.getElementById('fw-val').textContent=this.value+'%';applyPreview()">
+        <div style="font-size:0.68rem;color:var(--t4);margin-top:0.4rem;line-height:1.5;">Controls the width split between the large featured card (left) and the stacked cards (right). The stacked column automatically gets the remaining space.</div>
+      </div>
+      <div class="items-list" id="portfolio-items-list">
+        ${D.portfolio.items.map((item,i) => `
+          <div class="item-card">
+            <div class="item-card-top"><span class="item-card-num">Project ${i+1}${i===0?' (Featured / Large)':''}</span>
+              <button class="item-card-del" onclick="delItem('portfolio',${i})">✕</button>
+            </div>
+            <div class="img-upload-area" style="margin-bottom:0.6rem;">
+              <input type="file" accept="image/*" onchange="uploadPortfolioImg(${i},this)">
+              <img class="img-upload-preview ${item.image?'show':''}" id="port-img-prev-${i}" src="${item.image||''}" style="object-fit:cover;">
+              <div class="img-upload-text">${item.image?'Click to replace image':'Click to upload project image (cover/poster)'}</div>
+            </div>
+
+            <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem;margin-bottom:0.6rem;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--violet);margin-bottom:0.6rem;">🎬 Project Video (optional)</div>
+
+              <div class="img-upload-area" style="margin-bottom:0.6rem;${item.video?'border-color:rgba(176,106,255,0.4);':''}">
+                <input type="file" accept="video/*" onchange="uploadPortfolioVideo(${i},this)">
+                <div class="img-upload-text" style="${item.video?'color:var(--violet);':''}">${item.video?`✓ Video uploaded — click to replace`:'Click to upload a video file'}</div>
+              </div>
+              ${item.video ? `<button class="iac-btn" style="width:100%;margin-bottom:0.6rem;" onclick="setItemVal('portfolio',${i},'video','');renderEditor();applyPreview();">✕ Remove Video</button>` : ''}
+
+              <div class="mf-label" style="margin-bottom:0.3rem;">Or paste YouTube / Vimeo link</div>
+              <input class="f-text" value="${esc(item.videoEmbed||'')}" placeholder="https://youtube.com/watch?v=..." oninput="setItemVal('portfolio',${i},'videoEmbed',this.value);applyPreview()">
+              <div style="font-size:0.65rem;color:var(--t4);margin-top:0.4rem;line-height:1.5;">If a video is set, it plays (muted, looping) in the card instead of the image. The uploaded image above is used as the poster/cover.</div>
+            </div>
+            <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem;margin-bottom:0.6rem;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">📐 Card Holder Size</div>
+              ${itemRangeField('Frame Height','frameHeight','portfolio',i,150,700,(i===0?480:240),'px')}
+              <div style="display:flex;gap:0.4rem;margin-top:0.4rem;">
+                <button class="fit-opt" style="flex:1;padding:0.4rem;font-size:0.65rem;" onclick="setItemVal('portfolio',${i},'frameHeight',200);applyPreview();renderEditor();">S</button>
+                <button class="fit-opt" style="flex:1;padding:0.4rem;font-size:0.65rem;" onclick="setItemVal('portfolio',${i},'frameHeight',320);applyPreview();renderEditor();">M</button>
+                <button class="fit-opt" style="flex:1;padding:0.4rem;font-size:0.65rem;" onclick="setItemVal('portfolio',${i},'frameHeight',480);applyPreview();renderEditor();">L</button>
+                <button class="fit-opt" style="flex:1;padding:0.4rem;font-size:0.65rem;" onclick="setItemVal('portfolio',${i},'frameHeight',640);applyPreview();renderEditor();">XL</button>
+              </div>
+            </div>
+            ${item.image ? `
+            <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem;margin-bottom:0.6rem;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.6rem;">✂ Adjust Frame</div>
+              <div style="display:flex;gap:0.4rem;margin-bottom:0.6rem;">
+                <button class="fit-opt ${(item.imgFit||'cover')==='cover'?'active':''}" style="flex:1;padding:0.4rem;font-size:0.65rem;" onclick="setItemVal('portfolio',${i},'imgFit','cover');applyPreview();renderEditor();">Cover (crop)</button>
+                <button class="fit-opt ${item.imgFit==='contain'?'active':''}" style="flex:1;padding:0.4rem;font-size:0.65rem;" onclick="setItemVal('portfolio',${i},'imgFit','contain');applyPreview();renderEditor();">Contain (full)</button>
+              </div>
+              ${itemRangeField('Zoom','imgZoom','portfolio',i,50,250,100,'%')}
+              ${itemRangeField('Position X','imgPosX','portfolio',i,0,100,50,'%')}
+              ${itemRangeField('Position Y','imgPosY','portfolio',i,0,100,50,'%')}
+              <button class="iac-btn" style="width:100%;margin-top:0.3rem;" onclick="setItemVal('portfolio',${i},'imgFit','cover');setItemVal('portfolio',${i},'imgZoom',100);setItemVal('portfolio',${i},'imgPosX',50);setItemVal('portfolio',${i},'imgPosY',50);applyPreview();renderEditor();">↺ Reset Frame</button>
+            </div>
+            ` : ''}
+            <input class="f-text" value="${esc(item.title)}" placeholder="Project Title" oninput="setItemVal('portfolio',${i},'title',this.value)" style="margin-bottom:0.4rem;">
+            <div class="mf-row">
+              <div><div class="mf-label">Category</div><input class="f-text" value="${esc(item.cat)}" placeholder="e.g. Video Editing" oninput="setItemVal('portfolio',${i},'cat',this.value)"></div>
+              <div><div class="mf-label">Badge Text</div><input class="f-text" value="${esc(item.badge)}" placeholder="e.g. Video" oninput="setItemVal('portfolio',${i},'badge',this.value)"></div>
+            </div>
+            <div style="margin-top:0.5rem;">
+              <div class="mf-label">Badge / Accent Color</div>
+              <div class="color-row">
+                <div class="color-swatch" style="background:${item.color}">
+                  <input type="color" value="${item.color}" oninput="setItemVal('portfolio',${i},'color',this.value);this.parentElement.style.background=this.value">
+                </div>
+                <input class="color-hex" value="${item.color}" oninput="setItemVal('portfolio',${i},'color',this.value);this.previousElementSibling.style.background=this.value">
+              </div>
+            </div>
+
+            <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem;margin-top:0.6rem;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">📐 Frame Size (card height)</div>
+              ${itemRangeField('Height','frameHeight','portfolio',i,150,700,i===0?480:240,'px')}
+              <div style="display:flex;gap:0.4rem;">
+                <button class="iac-btn" style="flex:1;" onclick="setFrameHeight(${i},180)">S</button>
+                <button class="iac-btn" style="flex:1;" onclick="setFrameHeight(${i},280)">M</button>
+                <button class="iac-btn" style="flex:1;" onclick="setFrameHeight(${i},400)">L</button>
+                <button class="iac-btn" style="flex:1;" onclick="setFrameHeight(${i},520)">XL</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      ${D.portfolio.items.length < 3 ? `<button class="add-item-btn" onclick="addItem('portfolio',{title:'New Project',cat:'Category',badge:'New',color:'#00f5e4',image:''})">＋ Add Project</button>` : `<div style="font-size:0.72rem;color:var(--t4);text-align:center;padding:0.5rem;">Homepage preview shows max 3 projects. Manage your full portfolio in the Work page.</div>`}
+    `},
+    {id:'colors', label:'Colors', content:`
+      <div class="color-grid">
+        ${colorField('Background','bgColor','portfolio')}
+        ${colorField('Heading','headingColor','portfolio')}
+        ${colorField('Text','textColor','portfolio')}
+        ${colorField('Accent (2nd line)','accentColor','portfolio')}
+        ${colorField('Eyebrow','eyebrowColor','portfolio')}
+        ${colorField('Card BG','cardBg','portfolio')}
+        ${colorField('Button BG','btnBg','portfolio')}
+        ${colorField('Button Text','btnColor','portfolio')}
+      </div>
+      ${rangeField('Heading Size','headingSize','portfolio',32,120)}
+      ${spacingFields('portfolio')}
+    `}
+  ];
+  return `<div class="field-section active"><div class="fs-title">Portfolio Section</div>${subTabs('portfolio',tabs)}</div>`;
+}
+
+function uploadPortfolioImg(idx, input) {
+  if (!input.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    D.portfolio.items[idx].image = e.target.result;
+    renderEditor();
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function uploadPortfolioVideo(idx, input) {
+  if (!input.files[0]) return;
+  const file = input.files[0];
+  const sizeMB = file.size / (1024*1024);
+  if (sizeMB > 50) {
+    const proceed = confirm(`This video is ${sizeMB.toFixed(1)}MB. That's quite large and may take a moment to save. Continue anyway?\n\nTip: for very large videos, a YouTube/Vimeo link is still faster.`);
+    if (!proceed) { input.value = ''; return; }
+  }
+  const r = new FileReader();
+  r.onload = e => {
+    D.portfolio.items[idx].video = e.target.result;
+    D.portfolio.items[idx].videoEmbed = ''; // clear embed if file uploaded
+    renderEditor();
+    applyPreview();
+  };
+  r.readAsDataURL(file);
+}
+
+function setFrameHeight(idx, h) {
+  D.portfolio.items[idx].frameHeight = h;
+  applyPreview();
+  renderEditor();
+}
+
+function renderTestiEditor() {
+  const tabs = [
+    {id:'text', label:'Text', content:`
+      ${textField('Eyebrow','eyebrow','testimonials')}
+      ${textField('Heading','heading','testimonials')}
+      ${textField('Accent Word','accentWord','testimonials','Say')}
+    `},
+    {id:'items', label:'Items', content:`
+      <div class="items-list">
+        ${D.testimonials.items.map((item,i) => `
+          <div class="item-card">
+            <div class="item-card-top"><span class="item-card-num">Testimonial ${i+1}</span>
+              <button class="item-card-del" onclick="delItem('testimonials',${i})">✕</button>
+            </div>
+            <textarea class="f-textarea" style="min-height:70px;" oninput="setItemVal('testimonials',${i},'text',this.value)">${esc(item.text)}</textarea>
+            <input class="f-text" value="${esc(item.name)}" placeholder="Name" oninput="setItemVal('testimonials',${i},'name',this.value)" style="margin-top:0.4rem;margin-bottom:0.4rem;">
+            <input class="f-text" value="${esc(item.role)}" placeholder="Role / Company" oninput="setItemVal('testimonials',${i},'role',this.value)">
+          </div>
+        `).join('')}
+      </div>
+      <button class="add-item-btn" onclick="addItem('testimonials',{text:'Add testimonial text here.',name:'Client Name',role:'Role, Company',stars:'★★★★★'})">＋ Add Testimonial</button>
+    `},
+    {id:'colors', label:'Colors', content:`
+      <div class="color-grid">
+        ${colorField('Background','bgColor','testimonials')}
+        ${colorField('Heading','headingColor','testimonials')}
+        ${colorField('Text','textColor','testimonials')}
+        ${colorField('Accent Word','accentColor','testimonials')}
+        ${colorField('Card BG','cardBg','testimonials')}
+        ${colorField('Stars','starColor','testimonials')}
+        ${colorField('Eyebrow','eyebrowColor','testimonials')}
+      </div>
+      ${spacingFields('testimonials')}
+    `}
+  ];
+  return `<div class="field-section active"><div class="fs-title">Testimonials</div>${subTabs('testimonials',tabs)}</div>`;
+}
+
+function renderContactEditor() {
+  const tabs = [
+    {id:'text', label:'Text', content:`
+      ${textField('Eyebrow','eyebrow','contact')}
+      ${textareaField('Heading','heading','contact')}
+      ${textField('Accent Word','accentWord','contact')}
+      ${textareaField('Subtitle','sub','contact')}
+      ${textField('Button Text','btnText','contact','Send Message →')}
+    `},
+    {id:'colors', label:'Colors', content:`
+      <div class="color-grid">
+        ${colorField('Background','bgColor','contact')}
+        ${colorField('Heading','headingColor','contact')}
+        ${colorField('Text','textColor','contact')}
+        ${colorField('Accent','accentColor','contact')}
+        ${colorField('Eyebrow','eyebrowColor','contact')}
+        ${colorField('Button BG','btnBg','contact')}
+        ${colorField('Button Text','btnColor','contact')}
+        ${colorField('Input BG','inputBg','contact')}
+      </div>
+      ${spacingFields('contact')}
+    `}
+  ];
+  return `<div class="field-section active"><div class="fs-title">Contact Section</div>${subTabs('contact',tabs)}</div>`;
+}
+
+function renderFooterEditor() {
+  return `<div class="field-section active">
+    <div class="fs-title">Footer</div>
+    ${textField('Logo Text','logoText','footer')}
+    ${textField('Copyright Text','copy','footer','© 2025')}
+    <div class="field-group"><div class="fg-label">Colors</div><div class="color-grid">
+      ${colorField('Background','bgColor','footer')}
+      ${colorField('Text','textColor','footer')}
+      ${colorField('Logo Accent','logoAccent','footer')}
+      ${colorField('Border','borderColor','footer')}
+    </div></div>
+    ${spacingFields('footer')}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// STATE SETTERS
+// ═══════════════════════════════════════════════════
+function setVal(sec, key, val) { D[sec][key] = val; applyPreview(); }
+function setColor(sec, key, val) { D[sec][key] = val; applyPreview(); }
+function setItemVal(sec, idx, key, val) { D[sec].items[idx][key] = val; applyPreview(); }
+function delItem(sec, idx) { D[sec].items.splice(idx,1); renderEditor(); applyPreview(); }
+function addItem(sec, item) { D[sec].items.push(item); renderEditor(); applyPreview(); }
+function toggleVisible(sec, e) {
+  e.stopPropagation();
+  D[sec].visible = D[sec].visible === false ? true : false;
+  renderNav(); applyPreview();
+}
+function uploadBgImage(sec, input) {
+  if (!input.files[0]) return;
+  const r = new FileReader(); r.onload = e => { D[sec].bgImage = e.target.result; applyPreview(); }; r.readAsDataURL(input.files[0]);
+}
+
+// ═══════════════════════════════════════════════════
+// LIVE PREVIEW APPLY
+// ═══════════════════════════════════════════════════
+function applyPreview() {
+  const d = D;
+  // NAV
+  if (d.nav.logoType === 'image' && d.nav.logoImage) {
+    const h = d.nav.logoHeight || 36;
+    el('pv-logo-text').innerHTML = `<img src="${d.nav.logoImage}" style="height:${h}px;max-height:48px;width:auto;display:block;object-fit:contain;">`;
+  } else {
+    el('pv-logo-text').innerHTML = d.nav.logoText.replace('.', `<span style="color:${d.nav.logoAccent}">.</span>`);
+  }
+  el('pv-footer-logo').innerHTML = d.footer.logoText.replace('.', `<span style="color:${d.footer.logoAccent}">.</span>`);
+  styleEl('pv-nav-btn', {borderColor:d.nav.btnColor, color:d.nav.btnColor});
+
+  // HERO
+  const hero = el('prev-hero');
+  if (hero) {
+    hero.style.display = d.hero.visible === false ? 'none' : '';
+    hero.style.background = d.hero.bgColor;
+    hero.style.paddingTop = d.hero.paddingTop + 'px';
+    hero.style.paddingBottom = d.hero.paddingBottom + 'px';
+    if (d.hero.bgImage) {
+      el('pv-hero-bg').style.cssText = `background:url(${d.hero.bgImage}) center/cover no-repeat;opacity:${1-d.hero.overlayOpacity};`;
+    } else { el('pv-hero-bg').style.cssText=''; }
+    el('pv-hero-eyebrow').textContent = d.hero.eyebrow;
+    el('pv-hero-eyebrow').style.color = d.hero.eyebrowColor;
+    el('pv-h1-line1').textContent = d.hero.line1;
+    el('pv-h1-line1').style.cssText = `display:block;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,0.3);font-size:${d.hero.headingSize}px`;
+    el('pv-h1-line2').textContent = d.hero.line2;
+    el('pv-h1-line2').style.cssText = `display:block;color:${d.hero.accentColor};font-size:${d.hero.headingSize}px`;
+    el('pv-h1-line3').textContent = d.hero.line3;
+    el('pv-h1-line3').style.cssText = `display:block;color:${d.hero.textColor};font-size:${d.hero.headingSize}px`;
+    el('pv-hero-sub').textContent = d.hero.sub;
+    el('pv-hero-sub').style.cssText = `color:${d.hero.subColor};font-size:${d.hero.subSize}px;line-height:1.88;margin-top:1.25rem;max-width:580px;`;
+    styleEl('pv-hero-btn1', {background:d.hero.btn1Bg, color:d.hero.btn1Color, borderColor:d.hero.btn1Bg!='transparent'?d.hero.btn1Bg:d.hero.btn1Color});
+    el('pv-hero-btn1').textContent = d.hero.btn1Text;
+    styleEl('pv-hero-btn2', {background:d.hero.btn2Bg, color:d.hero.btn2Color, borderColor:d.hero.btn2Color});
+    el('pv-hero-btn2').textContent = d.hero.btn2Text;
+  }
+
+  // ABOUT
+  const about = el('prev-about');
+  if (about) {
+    about.style.display = d.about.visible===false?'none':'';
+    about.style.background = d.about.bgColor;
+    about.style.paddingTop = d.about.paddingTop+'px';
+    about.style.paddingBottom = d.about.paddingBottom+'px';
+    el('pv-about-eyebrow').textContent = d.about.eyebrow;
+    el('pv-about-eyebrow').style.color = d.about.eyebrowColor;
+    const lines = d.about.heading.split('\n');
+    el('pv-about-heading').innerHTML = lines.map((l,i) => {
+      if (l === d.about.accentWord) return `<span id="pv-about-accent" style="color:${d.about.accentColor}">${l}</span>`;
+      return `<span style="color:${d.about.headingColor}">${l}</span>`;
+    }).join('<br>');
+    el('pv-about-heading').style.fontSize = d.about.headingSize+'px';
+    el('pv-about-text').textContent = d.about.text;
+    el('pv-about-text').style.color = d.about.textColor;
+    el('pv-about-text').style.fontSize = d.about.textSize+'px';
+  }
+
+  // SERVICES
+  const svc = el('prev-services');
+  if (svc) {
+    svc.style.display = d.services.visible===false?'none':'';
+    svc.style.background = d.services.bgColor;
+    svc.style.paddingTop = d.services.paddingTop+'px';
+    svc.style.paddingBottom = d.services.paddingBottom+'px';
+    el('pv-svc-eyebrow').textContent = d.services.eyebrow;
+    el('pv-svc-eyebrow').style.color = d.services.eyebrowColor;
+    el('pv-svc-heading').textContent = d.services.heading;
+    el('pv-svc-heading').style.color = d.services.headingColor;
+    el('pv-svc-grid').innerHTML = d.services.items.map(item => `
+      <div class="prev-svc" style="background:${d.services.bgColor}">
+        <div class="prev-svc-num" style="color:${item.color}">${item.num}</div>
+        <div class="prev-svc-title" style="color:${item.color}">${item.title}</div>
+        <div class="prev-svc-desc" style="color:${d.services.textColor}">${item.desc}</div>
+      </div>`).join('');
+  }
+
+  // PORTFOLIO
+  const port = el('prev-portfolio');
+  if (port) {
+    port.style.display = d.portfolio.visible===false?'none':'';
+    port.style.background = d.portfolio.bgColor;
+    port.style.paddingTop = d.portfolio.paddingTop+'px';
+    port.style.paddingBottom = d.portfolio.paddingBottom+'px';
+    el('pv-port-eyebrow').textContent = d.portfolio.eyebrow;
+    el('pv-port-eyebrow').style.color = d.portfolio.eyebrowColor;
+    el('pv-port-heading').childNodes[0].textContent = d.portfolio.heading + ' ';
+    el('pv-port-heading').style.color = d.portfolio.headingColor;
+    el('pv-port-accent').textContent = d.portfolio.accentWord;
+    el('pv-port-accent').style.color = d.portfolio.accentColor;
+    const portCard = (item, idx) => {
+      const zoom = item.imgZoom || 100;
+      const posX = item.imgPosX!==undefined ? item.imgPosX : 50;
+      const posY = item.imgPosY!==undefined ? item.imgPosY : 50;
+      const fit = item.imgFit || 'cover';
+      const hasMedia = item.video || item.videoEmbed;
+      const bgStyle = (item.image && !hasMedia)
+        ? `background-image:url(${item.image});background-size:${fit==='contain'?'contain':zoom+'%'};background-position:${posX}% ${posY}%;background-repeat:no-repeat;`
+        : '';
+      const h = item.frameHeight || (idx===0 ? 480 : 240);
+
+      let mediaHTML = '';
+      if (item.video) {
+        mediaHTML = `<video src="${item.video}" ${item.image?`poster="${item.image}"`:''} controls loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:${fit};object-position:${posX}% ${posY}%;transform:scale(${zoom/100});transform-origin:center center;z-index:2;"></video>`;
+      } else if (item.videoEmbed) {
+        const embedUrl = toEmbedUrl(item.videoEmbed);
+        if (embedUrl) {
+          mediaHTML = `<iframe src="${embedUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:none;pointer-events:auto;z-index:2;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        }
+      }
+
+      return `
+      <div class="prev-port-item" style="background-color:${d.portfolio.cardBg};${bgStyle}height:${h}px;">
+        ${mediaHTML}
+        <div class="prev-port-shade"></div>
+        <span class="prev-port-badge" style="background:${item.color};color:${isLight(item.color)?'#000':'#fff'}">${item.badge||''}</span>
+        <div class="prev-port-overlay">
+          <div class="prev-port-cat" style="color:${item.color}">${item.cat||''}</div>
+          <div class="prev-port-title">${item.title||''}</div>
+        </div>
+      </div>`;
+    };
+    const items = d.portfolio.items;
+    let portHTML = items.length > 0 ? portCard(items[0], 0) : '';
+    if (items.length > 1) {
+      portHTML += `<div class="prev-port-col-right">${items.slice(1).map((it,j)=>portCard(it,j+1)).join('')}</div>`;
+    }
+    el('pv-port-grid').innerHTML = portHTML;
+    // apply featured width split
+    const fw = d.portfolio.featuredWidth || 58;
+    const featGrow = fw / (100 - fw);
+    const firstItem = el('pv-port-grid').querySelector('.prev-port-item:first-child');
+    if (firstItem) { firstItem.style.flexGrow = featGrow; firstItem.style.flexBasis = '0%'; }
+    const rightCol = el('pv-port-grid').querySelector('.prev-port-col-right');
+    if (rightCol) { rightCol.style.flexGrow = 1; rightCol.style.flexBasis = '0%'; }
+    el('pv-port-cta').textContent = d.portfolio.ctaText;
+    el('pv-port-cta').style.background = d.portfolio.btnBg;
+    el('pv-port-cta').style.borderColor = d.portfolio.btnBg;
+    el('pv-port-cta').style.color = d.portfolio.btnColor;
+  }
+
+  // TESTIMONIALS
+  const testi = el('prev-testi');
+  if (testi) {
+    testi.style.display = d.testimonials.visible===false?'none':'';
+    testi.style.background = d.testimonials.bgColor;
+    testi.style.paddingTop = d.testimonials.paddingTop+'px';
+    testi.style.paddingBottom = d.testimonials.paddingBottom+'px';
+    el('pv-testi-eyebrow').textContent = d.testimonials.eyebrow;
+    el('pv-testi-eyebrow').style.color = d.testimonials.eyebrowColor;
+    el('pv-testi-heading').innerHTML = `<span style="color:${d.testimonials.headingColor}">${d.testimonials.heading} </span><span style="color:${d.testimonials.accentColor}">${d.testimonials.accentWord}</span>`;
+    el('pv-testi-heading').style.fontSize = d.testimonials.headingSize+'px';
+    el('pv-testi-grid').innerHTML = d.testimonials.items.map(item => `
+      <div class="prev-testi" style="background:${d.testimonials.cardBg};border-color:rgba(255,255,255,0.08)">
+        <div class="prev-testi-stars" style="color:${d.testimonials.starColor}">${item.stars||'★★★★★'}</div>
+        <div class="prev-testi-text" style="color:${d.testimonials.textColor}">${item.text}</div>
+        <div class="prev-testi-name" style="color:${d.testimonials.headingColor}">${item.name}</div>
+        <div class="prev-testi-role">${item.role}</div>
+      </div>`).join('');
+  }
+
+  // CONTACT
+  const contact = el('prev-contact');
+  if (contact) {
+    contact.style.display = d.contact.visible===false?'none':'';
+    contact.style.background = d.contact.bgColor;
+    contact.style.paddingTop = d.contact.paddingTop+'px';
+    contact.style.paddingBottom = d.contact.paddingBottom+'px';
+    el('pv-contact-eyebrow').textContent = d.contact.eyebrow;
+    el('pv-contact-eyebrow').style.color = d.contact.eyebrowColor;
+    const clines = d.contact.heading.split('\n');
+    el('pv-contact-heading').innerHTML = clines.map(l => l===d.contact.accentWord ? `<span style="color:${d.contact.accentColor}">${l}</span>` : `<span style="color:${d.contact.headingColor}">${l}</span>`).join('<br>');
+    el('pv-contact-heading').style.fontSize = d.contact.headingSize+'px';
+    el('pv-contact-sub').textContent = d.contact.sub;
+    el('pv-contact-sub').style.color = d.contact.textColor;
+    el('pv-contact-btn').textContent = d.contact.btnText;
+    styleEl('pv-contact-btn', {background:d.contact.btnBg, color:d.contact.btnColor, borderColor:d.contact.btnBg});
+  }
+
+  // FOOTER
+  const footer = el('prev-footer');
+  if (footer) {
+    footer.style.background = d.footer.bgColor;
+    footer.style.paddingTop = d.footer.paddingTop+'px';
+    footer.style.paddingBottom = d.footer.paddingBottom+'px';
+    footer.style.borderTopColor = d.footer.borderColor;
+    el('pv-footer-copy').textContent = d.footer.copy;
+    el('pv-footer-copy').style.color = d.footer.textColor;
+  }
+}
+
+function el(id) { return document.getElementById(id); }
+function styleEl(id, styles) { const e=el(id); if(!e) return; Object.assign(e.style, styles); }
+function isLight(hex) {
+  if (!hex || hex[0] !== '#') return false;
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return (r*0.299 + g*0.587 + b*0.114) > 150;
+}
+function toEmbedUrl(url) {
+  if (!url) return '';
+  url = url.trim();
+  let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]+)/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}?autoplay=0`;
+  m = url.match(/vimeo\.com\/(\d+)/);
+  if (m) return `https://player.vimeo.com/video/${m[1]}`;
+  if (url.includes('youtube.com/embed/') || url.includes('player.vimeo.com')) return url;
+  return '';
+}
+
+// ═══════════════════════════════════════════════════
+// DEVICE PREVIEW
+// ═══════════════════════════════════════════════════
+function setDevice(mode, btn) {
+  document.querySelectorAll('.dev-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const f = document.getElementById('preview-frame');
+  f.className = 'preview-frame ' + mode;
+}
+
+// ═══════════════════════════════════════════════════
+// SAVE / PUBLISH / RESET
+// ═══════════════════════════════════════════════════
+async function saveAll() {
+  try {
+    await PortfolioDB.setItem('hp_editor', JSON.stringify(D));
+    showToast('✓ Saved to browser storage', 'success');
+  } catch(e) {
+    showToast('⚠ Storage error — try again or remove a large video', 'warning');
+  }
+}
+async function publishAll() {
+  try {
+    const json = JSON.stringify(D);
+    console.log('[Editor] Publishing. portfolio.featuredWidth =', D.portfolio ? D.portfolio.featuredWidth : 'NO PORTFOLIO KEY', '| Full portfolio data:', D.portfolio);
+    await PortfolioDB.setItem('hp_editor', json);
+    await PortfolioDB.setItem('hp_published', json);
+    // verify the write actually landed before declaring success
+    const check = await PortfolioDB.getItem('hp_published');
+    if (check !== json) throw new Error('verification mismatch — what was saved does not match what was written');
+    const reparsed = JSON.parse(check);
+    console.log('[Editor] Verified saved data. featuredWidth in storage =', reparsed.portfolio ? reparsed.portfolio.featuredWidth : 'MISSING');
+    showToast('🚀 Published! Refresh index.html (hard refresh if open) to see it live.', 'success');
+  } catch(e) {
+    console.error('[Editor] Publish error:', e);
+    showToast('⚠ Publish failed to verify — try again, or use Export below.', 'warning');
+  }
+}
+
+function exportHomepageData() {
+  const json = JSON.stringify(D, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'homepage-data-backup.json';
+  a.click();
+  showToast('⬇ Exported. Use Import on index.html if changes still don\'t appear.', 'success');
+}
+
+function importHomepageData(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      D = Object.assign(JSON.parse(JSON.stringify(DEFAULTS)), parsed);
+      await PortfolioDB.setItem('hp_editor', JSON.stringify(D));
+      await PortfolioDB.setItem('hp_published', JSON.stringify(D));
+      renderNav(); renderEditor(); applyPreview();
+      showToast('⬆ Imported and published successfully.', 'success');
+    } catch(err) {
+      showToast('⚠ Invalid file — could not import.', 'warning');
+    }
+  };
+  reader.readAsText(input.files[0]);
+  input.value = '';
+}
+function resetSection() {
+  if (!confirm(`Reset "${activeSection}" to defaults?`)) return;
+  D[activeSection] = JSON.parse(JSON.stringify(DEFAULTS[activeSection]));
+  renderEditor(); applyPreview();
+  showToast('↺ Section reset to defaults', 'warning');
+}
+function openPreviewTab() { window.open('index.html','_blank'); }
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// INIT — load data from IndexedDB (with migration), then render
+// ═══════════════════════════════════════════════════
+async function init() {
+  try {
+    await PortfolioDB.migrateFromLocalStorage(['hp_editor', 'hp_published']);
+    const s = await PortfolioDB.getItem('hp_editor');
+    if (s) D = Object.assign({}, DEFAULTS, JSON.parse(s));
+  } catch (e) { /* fall back to defaults */ }
+  renderNav(); renderEditor(); applyPreview();
+}
+init();
+
+// keyboard shortcut E+E to access editor from portfolio
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') { if(confirm('Go back to site?')) window.location='index.html'; }
+});
+</script>
+</body>
+</html>
